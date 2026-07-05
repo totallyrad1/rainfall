@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+ * level3 -- reconstructed from disassembly.
+ *
+ * v() reads a line and prints it with printf(buf) -- a classic format-string
+ * vulnerability: the user controls the format string, so directives like %x
+ * and %n are honoured. The global `m` (.bss, 0x0804988c) is then compared to
+ * 0x40; if equal, v() spawns system("/bin/sh").
+ *
+ * The exploit uses %n to write the value 0x40 (64) into `m`.
+ */
+int m;   /* global @ 0x0804988c */
+
+void v(void)
+{
+	char buf[520];   /* ebp-0x208 */
+
+	fgets(buf, 0x200, stdin);
+	printf(buf);                       /* <-- format string vulnerability */
+	if (m == 0x40)
+	{
+		fwrite("Wait what?!\n", 1, 12, stdout);
+		system("/bin/sh");
+	}
+}
+
+int main(void)
+{
+	v();
+	return 0;
+}
