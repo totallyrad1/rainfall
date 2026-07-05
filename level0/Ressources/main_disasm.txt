@@ -1,0 +1,25 @@
+08048ec0 <main>:
+ 8048ec0:	55                   	push   %ebp
+ 8048ec1:	89 e5                	mov    %esp,%ebp
+ 8048ec3:	83 e4 f0             	and    $0xfffffff0,%esp
+ 8048ec6:	83 ec 20             	sub    $0x20,%esp
+ 8048ec9:	8b 45 0c             	mov    0xc(%ebp),%eax        ; argv
+ 8048ecc:	83 c0 04             	add    $0x4,%eax             ; &argv[1]
+ 8048ecf:	8b 00                	mov    (%eax),%eax          ; argv[1]
+ 8048ed1:	89 04 24             	mov    %eax,(%esp)
+ 8048ed4:	e8 37 08 00 00       	call   8049710 <atoi>
+ 8048ed9:	3d a7 01 00 00       	cmp    $0x1a7,%eax          ; == 423 ?
+ 8048ede:	75 78                	jne    8048f58 <main+0x98>
+ 8048ee0:	c7 04 24 48 53 0c 08 	movl   $0x80c5348,(%esp)    ; "/bin/sh"
+ 8048ee7:	e8 04 7d 00 00       	call   8050bf0 <__strdup>
+ 8048eec:	89 44 24 10          	mov    %eax,0x10(%esp)
+ 8048ef0:	c7 44 24 14 00 00 00 	movl   $0x0,0x14(%esp)      ; argv[] = {"/bin/sh", NULL}
+ 8048ef8:	e8 83 b7 00 00       	call   8054680 <__getegid>
+ 8048f01:	e8 6a b7 00 00       	call   8054670 <__geteuid>
+ 8048f21:	e8 da b7 00 00       	call   8054700 <__setresgid>
+ 8048f3d:	e8 4e b7 00 00       	call   8054690 <__setresuid>
+ 8048f42:	8d 44 24 10          	lea    0x10(%esp),%eax
+ 8048f51:	e8 ea b6 00 00       	call   8054640 <execv>      ; execv("/bin/sh", argv)
+ 8048f58:  ...                                              ; else: fwrite("No !\n")
+
+String @ 0x80c5348:  2f62696e 2f736800  ->  "/bin/sh"

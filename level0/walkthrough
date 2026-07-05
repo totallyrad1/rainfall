@@ -1,0 +1,44 @@
+level0 - walkthrough
+====================
+
+Target: /home/user/level0/level0
+        -rwsr-x---  owned by level1, setuid bit set
+        setuid ELF 32-bit LSB, Intel 80386, statically linked, not stripped
+
+Goal: read /home/user/level1/.pass
+
+1. Recon
+   $ file level0
+   $ objdump -d level0 | sed -n '/<main>:/,/ret/p'
+
+2. What main() does
+   - argv[1] is passed to atoi().
+   - The integer result is compared with 0x1a7 (= 423).
+       8048ed4:  call   atoi
+       8048ed9:  cmp    $0x1a7,%eax
+       8048ede:  jne    <fail>
+   - On a match it:
+       * strdup("/bin/sh")
+       * gid = getegid(); uid = geteuid();
+       * setresgid(gid, gid, gid);   setresuid(uid, uid, uid);
+         -> makes the (level1) effective id the real id too, so the
+            privilege survives into the execed program.
+       * execv("/bin/sh", {"/bin/sh", NULL});
+   - On a mismatch it prints "No !".
+
+3. Exploit
+   There is no memory corruption here at all -- just satisfy the check by
+   passing 423 as the argument. The setuid binary then hands us a shell
+   running as level1.
+
+       level0@RainFall:~$ ./level0 423
+       $ id
+       uid=2030(level1) gid=2020(level0) groups=2030(level1),...
+       $ cat /home/user/level1/.pass
+
+   Non-interactive form used to capture the flag:
+
+       $ echo "cat /home/user/level1/.pass" | ./level0 423
+
+4. Result -- level1 password:
+   1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a

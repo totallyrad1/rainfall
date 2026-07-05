@@ -1,0 +1,12 @@
+# WSL download artifacts
+*:Zone.Identifier
+
+# Subject PDF (reference only, not a graded deliverable)
+en.subject.pdf
+
+# The subject forbids committing ANY binary. Never track compiled output.
+*.o
+*.out
+a.out
+core
+core.*
