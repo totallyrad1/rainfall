@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+/*
+ * bonus0 -- reconstructed from disassembly.
+ *
+ * p(dest, prompt):
+ *     reads up to 4096 bytes, cuts at the first '\n', then
+ *     strncpy(dest, buf, 20).  strncpy does NOT NUL-terminate when the source
+ *     is >= 20 bytes, so a full 20-byte line leaves `dest` unterminated.
+ *
+ * pp(dest):
+ *     fills two 20-byte buffers a and b that are ADJACENT on the stack, then
+ *         strcpy(dest, a);          // a unterminated -> keeps reading into b
+ *         dest[strlen(dest)] = ' '; // 2-byte " " separator
+ *         strcat(dest, b);
+ *     i.e. dest = a + " " + b, but because a is not terminated the copies run
+ *     well past 20 bytes.
+ *
+ * main() passes a small stack buffer to pp(), so the concatenation overruns it
+ * and overwrites main's saved return address. The 4 bytes that land on the
+ * return address correspond to offset 9 of the SECOND input.
+ */
+void p(char *dest, char *prompt)
+{
+	char  buf[4096];   /* ebp-0x1008 */
+	char *nl;
+
+	puts(prompt);
+	read(0, buf, 4096);
+	nl = strchr(buf, '\n');
+	*nl = '\0';                    /* truncate at first newline */
+	strncpy(dest, buf, 20);        /* <-- 20 bytes, NOT NUL-terminated */
+}
+
+void pp(char *dest)
+{
+	char a[20];   /* ebp-0x30 */
+	char b[20];   /* ebp-0x1c, immediately after a */
+
+	p(a, " - ");
+	p(b, " - ");
+	strcpy(dest, a);               /* a unterminated -> reads into b as well */
+	dest[strlen(dest)] = ' ';      /* insert the " " separator */
+	strcat(dest, b);               /* <-- overflows main's small buffer */
+}
+
+int main(void)
+{
+	char buf[42];   /* esp+0x16 in a 0x40 frame -- far too small */
+
+	pp(buf);
+	puts(buf);
+	return 0;
+}

