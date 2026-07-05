@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+ * level4 -- reconstructed from disassembly.
+ *
+ * Same shape as level3 but the format-string printf() lives in a helper p(),
+ * and the magic value the global `m` (.bss, 0x08049810) must reach is large:
+ * 0x1025544 (16930116). On a match, n() runs a command that already cats the
+ * next password, so no shell interaction is needed.
+ *
+ * Writing 16930116 with a single %n would mean printing ~16 MB. Instead we
+ * split the 4-byte write into two 2-byte %hn writes (0x0102 to m+2, 0x5544 to
+ * m), which only needs ~21 KB of output.
+ */
+int m;   /* global @ 0x08049810 */
+
+void p(char *s)
+{
+	printf(s);                 /* <-- format string vulnerability */
+}
+
+void n(void)
+{
+	char buf[520];
+
+	fgets(buf, 0x200, stdin);
+	p(buf);
+	if (m == 0x1025544)
+		system("/bin/cat /home/user/level5/.pass");
+}
+
+int main(void)
+{
+	n();
+	return 0;
+}
