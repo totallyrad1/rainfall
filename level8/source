@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/*
+ * level8 -- reconstructed from disassembly.
+ *
+ * A tiny command interpreter with two global pointers, auth and service.
+ * Commands:
+ *   "auth <name>"  : auth = malloc(4); *auth = 0; if strlen(name) <= 30
+ *                    strcpy(auth, name);
+ *   "reset"        : free(auth);
+ *   "service<...>" : service = strdup(line + 7);
+ *   "login"        : if (*(int *)(auth + 0x20)) system("/bin/sh");
+ *                    else print "Password:".
+ *
+ * The bug: "login" checks *(auth + 0x20), but auth is only a 4-byte
+ * allocation. auth is malloc(4); the very next heap allocation -- the
+ * "service" strdup -- lands right behind auth, so a service string that is
+ * long enough writes non-zero bytes over the auth+0x20 location. Then "login"
+ * sees a non-zero value and spawns a shell.
+ */
+char *auth;      /* global @ 0x8049aac */
+char *service;   /* global @ 0x8049ab0 */
+
+int main(void)
+{
+	char line[128];
+
+	while (1)
+	{
+		printf("%p, %p \n", service, auth);
+		if (fgets(line, 128, stdin) == NULL)
+			break;
+
+		if (strncmp(line, "auth ", 5) == 0)
+		{
+			auth = malloc(4);
+			*auth = 0;
+			if (strlen(line + 5) <= 30)
+				strcpy(auth, line + 5);
+		}
+		if (strncmp(line, "reset", 5) == 0)
+			free(auth);
+		if (strncmp(line, "service", 6) == 0)
+			service = strdup(line + 7);
+		if (strncmp(line, "login", 5) == 0)
+		{
+			if (*(int *)(auth + 0x20))       /* auth[0x20] */
+				system("/bin/sh");
+			else
+				fwrite("Password:\n", 1, 10, stdout);
+		}
+	}
+	return 0;
+}
