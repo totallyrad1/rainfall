@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+/*
+ * level7 -- reconstructed from disassembly.
+ *
+ * main() builds two little structs { int id; char *buf; } on the heap, each
+ * with its own malloc(8) buffer. It then does:
+ *     strcpy(a->buf, argv[1]);
+ *     strcpy(b->buf, argv[2]);
+ * The first strcpy has no bounds check, and a->buf's 8-byte chunk is directly
+ * followed on the heap by struct b. Overflowing argv[1] therefore overwrites
+ * b->buf (the pointer used by the SECOND strcpy) -> we get an arbitrary write
+ * of argv[2] to any address (offset a->buf -> &b->buf is 20 bytes).
+ *
+ * Afterwards, fgets() loads /home/user/level8/.pass into the global buffer c
+ * (0x8049960), and the program calls puts("~~"). The unused function m() does
+ * printf("%s - %d", c, time(NULL)) -- i.e. it prints that global buffer.
+ *
+ * Exploit: overwrite puts@GOT (0x08049928) with &m (0x080484f4). The final
+ * puts("~~") then runs m(), printing the level8 password.
+ */
+struct s { int id; char *buf; };
+
+char c[68];   /* global @ 0x8049960 */
+
+void m(void)  /* @ 0x080484f4 */
+{
+	printf("%s - %d\n", c, time(NULL));
+}
+
+int main(int argc, char **argv)
+{
+	struct s *a = malloc(sizeof(struct s));
+	a->id  = 1;
+	a->buf = malloc(8);
+
+	struct s *b = malloc(sizeof(struct s));
+	b->id  = 2;
+	b->buf = malloc(8);
+
+	strcpy(a->buf, argv[1]);   /* <-- overflow: overwrites b->buf */
+	strcpy(b->buf, argv[2]);   /* <-- arbitrary write to b->buf's address */
+
+	FILE *f = fopen("/home/user/level8/.pass", "r");
+	fgets(c, 68, f);           /* load the level8 password into c */
+	puts("~~");                /* puts@GOT hijacked -> m() prints c */
+	return 0;
+}
