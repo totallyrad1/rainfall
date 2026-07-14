@@ -40,5 +40,6 @@ Each `exploit.py` builds a payload (`python3 exploit.py > payload`); the
 | level03 | **NX on**, no canary/PIE, ASLR off | `gets()` overflow → ret2libc (setreuid + system) |
 | level04 | NX, no canary/PIE, ASLR off       | format string → frame-pointer pivot → ret2libc |
 | level05 | NX, no canary/PIE, ASLR off       | `gets()` overflow → ret2libc + `system("/bin/sh")` |
+| level06 | NX + **canary**, no PIE, ASLR off  | format-string canary leak → `gets()` overflow ret2libc |
 | …       |                                   |                                        |
 | level10 | NX + canary + ASLR (boss)         | leak + canary defeat + ret2libc ROP    |
