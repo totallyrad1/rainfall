@@ -35,6 +35,7 @@ Each `exploit.py` builds a payload (`python3 exploit.py > payload`); the
 | Level   | Key mitigation state              | Technique                              |
 | ------- | --------------------------------- | -------------------------------------- |
 | level00 | exec stack, no canary/PIE, ASLR off | shellcode on stack + NOP sled        |
-| level01 | _tbd_                             | _tbd_                                  |
+| level01 | exec stack, no canary/PIE, ASLR off | `read()` overflow, ret into win block |
+| level02 | exec stack, no canary/PIE, ASLR off | 1-byte saved-RBP overwrite → frame-pointer pivot → stack shellcode |
 | …       |                                   |                                        |
 | level10 | NX + canary + ASLR (boss)         | leak + canary defeat + ret2libc ROP    |
