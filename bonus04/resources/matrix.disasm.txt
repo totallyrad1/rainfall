@@ -1,0 +1,229 @@
+0000000000401411 <lookup>:
+  401411:	f3 0f 1e fa          	endbr64
+  401415:	55                   	push   %rbp
+  401416:	48 89 e5             	mov    %rsp,%rbp
+  401419:	48 83 ec 20          	sub    $0x20,%rsp
+  40141d:	48 89 7d e8          	mov    %rdi,-0x18(%rbp)
+  401421:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+  401425:	48 89 c7             	mov    %rax,%rdi
+  401428:	e8 09 fe ff ff       	call   401236 <djb2>
+  40142d:	89 45 f8             	mov    %eax,-0x8(%rbp)
+  401430:	c7 45 fc 00 00 00 00 	movl   $0x0,-0x4(%rbp)
+  401437:	e9 c0 00 00 00       	jmp    4014fc <lookup+0xeb>
+  40143c:	8b 55 fc             	mov    -0x4(%rbp),%edx
+  40143f:	48 89 d0             	mov    %rdx,%rax
+  401442:	48 c1 e0 03          	shl    $0x3,%rax
+  401446:	48 01 d0             	add    %rdx,%rax
+  401449:	48 c1 e0 03          	shl    $0x3,%rax
+  40144d:	48 89 c2             	mov    %rax,%rdx
+  401450:	48 8d 05 0d 21 00 00 	lea    0x210d(%rip),%rax        # 403564 <table+0x4>
+  401457:	8b 04 02             	mov    (%rdx,%rax,1),%eax
+  40145a:	39 45 f8             	cmp    %eax,-0x8(%rbp)
+  40145d:	0f 85 95 00 00 00    	jne    4014f8 <lookup+0xe7>
+  401463:	8b 55 fc             	mov    -0x4(%rbp),%edx
+  401466:	48 89 d0             	mov    %rdx,%rax
+  401469:	48 c1 e0 03          	shl    $0x3,%rax
+  40146d:	48 01 d0             	add    %rdx,%rax
+  401470:	48 c1 e0 03          	shl    $0x3,%rax
+  401474:	48 8d 15 e5 20 00 00 	lea    0x20e5(%rip),%rdx        # 403560 <table>
+  40147b:	48 01 d0             	add    %rdx,%rax
+  40147e:	48 8d 48 08          	lea    0x8(%rax),%rcx
+  401482:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+  401486:	ba 20 00 00 00       	mov    $0x20,%edx
+  40148b:	48 89 c6             	mov    %rax,%rsi
+  40148e:	48 89 cf             	mov    %rcx,%rdi
+  401491:	e8 3a fc ff ff       	call   4010d0 <strncmp@plt>
+  401496:	85 c0                	test   %eax,%eax
+  401498:	75 5e                	jne    4014f8 <lookup+0xe7>
+  40149a:	8b 55 fc             	mov    -0x4(%rbp),%edx
+  40149d:	48 89 d0             	mov    %rdx,%rax
+  4014a0:	48 c1 e0 03          	shl    $0x3,%rax
+  4014a4:	48 01 d0             	add    %rdx,%rax
+  4014a7:	48 c1 e0 03          	shl    $0x3,%rax
+  4014ab:	48 8d 50 20          	lea    0x20(%rax),%rdx
+  4014af:	48 8d 05 aa 20 00 00 	lea    0x20aa(%rip),%rax        # 403560 <table>
+  4014b6:	48 01 d0             	add    %rdx,%rax
+  4014b9:	48 8d 48 08          	lea    0x8(%rax),%rcx
+  4014bd:	8b 55 fc             	mov    -0x4(%rbp),%edx
+  4014c0:	48 89 d0             	mov    %rdx,%rax
+  4014c3:	48 c1 e0 03          	shl    $0x3,%rax
+  4014c7:	48 01 d0             	add    %rdx,%rax
+  4014ca:	48 c1 e0 03          	shl    $0x3,%rax
+  4014ce:	48 8d 15 8b 20 00 00 	lea    0x208b(%rip),%rdx        # 403560 <table>
+  4014d5:	48 01 d0             	add    %rdx,%rax
+  4014d8:	48 83 c0 08          	add    $0x8,%rax
+  4014dc:	48 89 ca             	mov    %rcx,%rdx
+  4014df:	48 89 c6             	mov    %rax,%rsi
+  4014e2:	48 8d 05 8c 0b 00 00 	lea    0xb8c(%rip),%rax        # 402075 <_IO_stdin_used+0x75>
+  4014e9:	48 89 c7             	mov    %rax,%rdi
+  4014ec:	b8 00 00 00 00       	mov    $0x0,%eax
+  4014f1:	e8 0a fc ff ff       	call   401100 <printf@plt>
+  4014f6:	eb 22                	jmp    40151a <lookup+0x109>
+  4014f8:	83 45 fc 01          	addl   $0x1,-0x4(%rbp)
+  4014fc:	8b 05 de 24 00 00    	mov    0x24de(%rip),%eax        # 4039e0 <entry_count>
+  401502:	39 45 fc             	cmp    %eax,-0x4(%rbp)
+  401505:	0f 82 31 ff ff ff    	jb     40143c <lookup+0x2b>
+  40150b:	48 8d 05 7d 0b 00 00 	lea    0xb7d(%rip),%rax        # 40208f <_IO_stdin_used+0x8f>
+  401512:	48 89 c7             	mov    %rax,%rdi
+  401515:	e8 c6 fb ff ff       	call   4010e0 <puts@plt>
+  40151a:	c9                   	leave
+  40151b:	c3                   	ret
+
+000000000040151c <insert>:
+  40151c:	f3 0f 1e fa          	endbr64
+  401520:	55                   	push   %rbp
+  401521:	48 89 e5             	mov    %rsp,%rbp
+  401524:	53                   	push   %rbx
+  401525:	48 83 ec 18          	sub    $0x18,%rsp
+  401529:	48 89 7d e8          	mov    %rdi,-0x18(%rbp)
+  40152d:	48 89 75 e0          	mov    %rsi,-0x20(%rbp)
+  401531:	8b 05 a9 24 00 00    	mov    0x24a9(%rip),%eax        # 4039e0 <entry_count>
+  401537:	83 f8 0f             	cmp    $0xf,%eax
+  40153a:	0f 87 fa 00 00 00    	ja     40163a <insert+0x11e>
+  401540:	8b 05 9a 24 00 00    	mov    0x249a(%rip),%eax        # 4039e0 <entry_count>
+  401546:	8b 15 94 24 00 00    	mov    0x2494(%rip),%edx        # 4039e0 <entry_count>
+  40154c:	89 c1                	mov    %eax,%ecx
+  40154e:	48 89 c8             	mov    %rcx,%rax
+  401551:	48 c1 e0 03          	shl    $0x3,%rax
+  401555:	48 01 c8             	add    %rcx,%rax
+  401558:	48 c1 e0 03          	shl    $0x3,%rax
+  40155c:	48 89 c1             	mov    %rax,%rcx
+  40155f:	48 8d 05 fa 1f 00 00 	lea    0x1ffa(%rip),%rax        # 403560 <table>
+  401566:	89 14 01             	mov    %edx,(%rcx,%rax,1)
+  401569:	8b 05 71 24 00 00    	mov    0x2471(%rip),%eax        # 4039e0 <entry_count>
+  40156f:	89 c2                	mov    %eax,%edx
+  401571:	48 89 d0             	mov    %rdx,%rax
+  401574:	48 c1 e0 03          	shl    $0x3,%rax
+  401578:	48 01 d0             	add    %rdx,%rax
+  40157b:	48 c1 e0 03          	shl    $0x3,%rax
+  40157f:	48 8d 15 da 1f 00 00 	lea    0x1fda(%rip),%rdx        # 403560 <table>
+  401586:	48 01 d0             	add    %rdx,%rax
+  401589:	48 8d 48 08          	lea    0x8(%rax),%rcx
+  40158d:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+  401591:	ba 1f 00 00 00       	mov    $0x1f,%edx
+  401596:	48 89 c6             	mov    %rax,%rsi
+  401599:	48 89 cf             	mov    %rcx,%rdi
+  40159c:	e8 1f fb ff ff       	call   4010c0 <strncpy@plt>
+  4015a1:	8b 05 39 24 00 00    	mov    0x2439(%rip),%eax        # 4039e0 <entry_count>
+  4015a7:	89 c2                	mov    %eax,%edx
+  4015a9:	48 89 d0             	mov    %rdx,%rax
+  4015ac:	48 c1 e0 03          	shl    $0x3,%rax
+  4015b0:	48 01 d0             	add    %rdx,%rax
+  4015b3:	48 c1 e0 03          	shl    $0x3,%rax
+  4015b7:	48 8d 50 20          	lea    0x20(%rax),%rdx
+  4015bb:	48 8d 05 9e 1f 00 00 	lea    0x1f9e(%rip),%rax        # 403560 <table>
+  4015c2:	48 01 d0             	add    %rdx,%rax
+  4015c5:	48 8d 48 08          	lea    0x8(%rax),%rcx
+  4015c9:	48 8b 45 e0          	mov    -0x20(%rbp),%rax
+  4015cd:	ba 1f 00 00 00       	mov    $0x1f,%edx
+  4015d2:	48 89 c6             	mov    %rax,%rsi
+  4015d5:	48 89 cf             	mov    %rcx,%rdi
+  4015d8:	e8 e3 fa ff ff       	call   4010c0 <strncpy@plt>
+  4015dd:	8b 1d fd 23 00 00    	mov    0x23fd(%rip),%ebx        # 4039e0 <entry_count>
+  4015e3:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+  4015e7:	48 89 c7             	mov    %rax,%rdi
+  4015ea:	e8 47 fc ff ff       	call   401236 <djb2>
+  4015ef:	89 c2                	mov    %eax,%edx
+  4015f1:	89 d9                	mov    %ebx,%ecx
+  4015f3:	48 89 c8             	mov    %rcx,%rax
+  4015f6:	48 c1 e0 03          	shl    $0x3,%rax
+  4015fa:	48 01 c8             	add    %rcx,%rax
+  4015fd:	48 c1 e0 03          	shl    $0x3,%rax
+  401601:	48 89 c1             	mov    %rax,%rcx
+  401604:	48 8d 05 59 1f 00 00 	lea    0x1f59(%rip),%rax        # 403564 <table+0x4>
+  40160b:	89 14 01             	mov    %edx,(%rcx,%rax,1)
+  40160e:	8b 05 cc 23 00 00    	mov    0x23cc(%rip),%eax        # 4039e0 <entry_count>
+  401614:	83 c0 01             	add    $0x1,%eax
+  401617:	89 05 c3 23 00 00    	mov    %eax,0x23c3(%rip)        # 4039e0 <entry_count>
+  40161d:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+  401621:	48 89 c6             	mov    %rax,%rsi
+  401624:	48 8d 05 7c 0a 00 00 	lea    0xa7c(%rip),%rax        # 4020a7 <_IO_stdin_used+0xa7>
+  40162b:	48 89 c7             	mov    %rax,%rdi
+  40162e:	b8 00 00 00 00       	mov    $0x0,%eax
+  401633:	e8 c8 fa ff ff       	call   401100 <printf@plt>
+  401638:	eb 01                	jmp    40163b <insert+0x11f>
+  40163a:	90                   	nop
+  40163b:	48 8b 5d f8          	mov    -0x8(%rbp),%rbx
+  40163f:	c9                   	leave
+  401640:	c3                   	ret
+
+0000000000401641 <handle_input>:
+  401641:	f3 0f 1e fa          	endbr64
+  401645:	55                   	push   %rbp
+  401646:	48 89 e5             	mov    %rsp,%rbp
+  401649:	48 81 ec b0 00 00 00 	sub    $0xb0,%rsp
+  401650:	48 8d 05 67 0a 00 00 	lea    0xa67(%rip),%rax        # 4020be <_IO_stdin_used+0xbe>
+  401657:	48 89 c7             	mov    %rax,%rdi
+  40165a:	b8 00 00 00 00       	mov    $0x0,%eax
+  40165f:	e8 9c fa ff ff       	call   401100 <printf@plt>
+  401664:	48 8b 05 d5 1e 00 00 	mov    0x1ed5(%rip),%rax        # 403540 <stdout@GLIBC_2.2.5>
+  40166b:	48 89 c7             	mov    %rax,%rdi
+  40166e:	e8 cd fa ff ff       	call   401140 <fflush@plt>
+  401673:	48 8d 45 90          	lea    -0x70(%rbp),%rax
+  401677:	48 89 c7             	mov    %rax,%rdi
+  40167a:	e8 b1 fa ff ff       	call   401130 <gets@plt>
+  40167f:	48 8d 45 90          	lea    -0x70(%rbp),%rax
+  401683:	ba 04 00 00 00       	mov    $0x4,%edx
+  401688:	48 8d 0d 4c 0a 00 00 	lea    0xa4c(%rip),%rcx        # 4020db <_IO_stdin_used+0xdb>
+  40168f:	48 89 ce             	mov    %rcx,%rsi
+  401692:	48 89 c7             	mov    %rax,%rdi
+  401695:	e8 36 fa ff ff       	call   4010d0 <strncmp@plt>
+  40169a:	85 c0                	test   %eax,%eax
+  40169c:	75 33                	jne    4016d1 <handle_input+0x90>
+  40169e:	48 8d 45 90          	lea    -0x70(%rbp),%rax
+  4016a2:	48 83 c0 04          	add    $0x4,%rax
+  4016a6:	48 8d 8d 70 ff ff ff 	lea    -0x90(%rbp),%rcx
+  4016ad:	ba 1f 00 00 00       	mov    $0x1f,%edx
+  4016b2:	48 89 c6             	mov    %rax,%rsi
+  4016b5:	48 89 cf             	mov    %rcx,%rdi
+  4016b8:	e8 03 fa ff ff       	call   4010c0 <strncpy@plt>
+  4016bd:	48 8d 85 70 ff ff ff 	lea    -0x90(%rbp),%rax
+  4016c4:	48 89 c7             	mov    %rax,%rdi
+  4016c7:	e8 45 fd ff ff       	call   401411 <lookup>
+  4016cc:	e9 b2 00 00 00       	jmp    401783 <handle_input+0x142>
+  4016d1:	48 8d 45 90          	lea    -0x70(%rbp),%rax
+  4016d5:	ba 04 00 00 00       	mov    $0x4,%edx
+  4016da:	48 8d 0d ff 09 00 00 	lea    0x9ff(%rip),%rcx        # 4020e0 <_IO_stdin_used+0xe0>
+  4016e1:	48 89 ce             	mov    %rcx,%rsi
+  4016e4:	48 89 c7             	mov    %rax,%rdi
+  4016e7:	e8 e4 f9 ff ff       	call   4010d0 <strncmp@plt>
+  4016ec:	85 c0                	test   %eax,%eax
+  4016ee:	0f 85 80 00 00 00    	jne    401774 <handle_input+0x133>
+  4016f4:	48 8d 45 90          	lea    -0x70(%rbp),%rax
+  4016f8:	48 83 c0 04          	add    $0x4,%rax
+  4016fc:	be 3a 00 00 00       	mov    $0x3a,%esi
+  401701:	48 89 c7             	mov    %rax,%rdi
+  401704:	e8 e7 f9 ff ff       	call   4010f0 <strchr@plt>
+  401709:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+  40170d:	48 83 7d f8 00       	cmpq   $0x0,-0x8(%rbp)
+  401712:	74 6f                	je     401783 <handle_input+0x142>
+  401714:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+  401718:	c6 00 00             	movb   $0x0,(%rax)
+  40171b:	48 8d 45 90          	lea    -0x70(%rbp),%rax
+  40171f:	48 83 c0 04          	add    $0x4,%rax
+  401723:	48 8d 8d 70 ff ff ff 	lea    -0x90(%rbp),%rcx
+  40172a:	ba 1f 00 00 00       	mov    $0x1f,%edx
+  40172f:	48 89 c6             	mov    %rax,%rsi
+  401732:	48 89 cf             	mov    %rcx,%rdi
+  401735:	e8 86 f9 ff ff       	call   4010c0 <strncpy@plt>
+  40173a:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+  40173e:	48 8d 48 01          	lea    0x1(%rax),%rcx
+  401742:	48 8d 85 50 ff ff ff 	lea    -0xb0(%rbp),%rax
+  401749:	ba 1f 00 00 00       	mov    $0x1f,%edx
+  40174e:	48 89 ce             	mov    %rcx,%rsi
+  401751:	48 89 c7             	mov    %rax,%rdi
+  401754:	e8 67 f9 ff ff       	call   4010c0 <strncpy@plt>
+  401759:	48 8d 95 50 ff ff ff 	lea    -0xb0(%rbp),%rdx
+  401760:	48 8d 85 70 ff ff ff 	lea    -0x90(%rbp),%rax
+  401767:	48 89 d6             	mov    %rdx,%rsi
+  40176a:	48 89 c7             	mov    %rax,%rdi
+  40176d:	e8 aa fd ff ff       	call   40151c <insert>
+  401772:	eb 0f                	jmp    401783 <handle_input+0x142>
+  401774:	48 8d 05 6a 09 00 00 	lea    0x96a(%rip),%rax        # 4020e5 <_IO_stdin_used+0xe5>
+  40177b:	48 89 c7             	mov    %rax,%rdi
+  40177e:	e8 5d f9 ff ff       	call   4010e0 <puts@plt>
+  401783:	90                   	nop
+  401784:	c9                   	leave
+  401785:	c3                   	ret
+
+0000000000401786 <main>:

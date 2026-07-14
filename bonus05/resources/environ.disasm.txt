@@ -1,0 +1,142 @@
+000000000000165b <trace_query>:
+    165b:	f3 0f 1e fa          	endbr64
+    165f:	55                   	push   %rbp
+    1660:	48 89 e5             	mov    %rsp,%rbp
+    1663:	48 83 ec 50          	sub    $0x50,%rsp
+    1667:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+    166e:	00 00 
+    1670:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+    1674:	31 c0                	xor    %eax,%eax
+    1676:	48 8d 05 66 0a 00 00 	lea    0xa66(%rip),%rax        # 20e3 <_IO_stdin_used+0xe3>
+    167d:	48 89 c7             	mov    %rax,%rdi
+    1680:	b8 00 00 00 00       	mov    $0x0,%eax
+    1685:	e8 96 fa ff ff       	call   1120 <printf@plt>
+    168a:	48 8b 05 8f 29 00 00 	mov    0x298f(%rip),%rax        # 4020 <stdout@GLIBC_2.2.5>
+    1691:	48 89 c7             	mov    %rax,%rdi
+    1694:	e8 b7 fa ff ff       	call   1150 <fflush@plt>
+    1699:	48 8b 15 90 29 00 00 	mov    0x2990(%rip),%rdx        # 4030 <stdin@GLIBC_2.2.5>
+    16a0:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+    16a4:	be 40 00 00 00       	mov    $0x40,%esi
+    16a9:	48 89 c7             	mov    %rax,%rdi
+    16ac:	e8 7f fa ff ff       	call   1130 <fgets@plt>
+    16b1:	48 85 c0             	test   %rax,%rax
+    16b4:	74 36                	je     16ec <trace_query+0x91>
+    16b6:	48 8d 05 3c 0a 00 00 	lea    0xa3c(%rip),%rax        # 20f9 <_IO_stdin_used+0xf9>
+    16bd:	48 89 c7             	mov    %rax,%rdi
+    16c0:	b8 00 00 00 00       	mov    $0x0,%eax
+    16c5:	e8 56 fa ff ff       	call   1120 <printf@plt>
+    16ca:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+    16ce:	48 89 c7             	mov    %rax,%rdi
+    16d1:	b8 00 00 00 00       	mov    $0x0,%eax
+    16d6:	e8 45 fa ff ff       	call   1120 <printf@plt>
+    16db:	48 8b 05 3e 29 00 00 	mov    0x293e(%rip),%rax        # 4020 <stdout@GLIBC_2.2.5>
+    16e2:	48 89 c7             	mov    %rax,%rdi
+    16e5:	e8 66 fa ff ff       	call   1150 <fflush@plt>
+    16ea:	eb 01                	jmp    16ed <trace_query+0x92>
+    16ec:	90                   	nop
+    16ed:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+    16f1:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+    16f8:	00 00 
+    16fa:	74 05                	je     1701 <trace_query+0xa6>
+    16fc:	e8 0f fa ff ff       	call   1110 <__stack_chk_fail@plt>
+    1701:	c9                   	leave
+    1702:	c3                   	ret
+
+0000000000001703 <handle_input>:
+    1703:	f3 0f 1e fa          	endbr64
+    1707:	55                   	push   %rbp
+    1708:	48 89 e5             	mov    %rsp,%rbp
+    170b:	48 83 ec 70          	sub    $0x70,%rsp
+    170f:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+    1716:	00 00 
+    1718:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+    171c:	31 c0                	xor    %eax,%eax
+    171e:	e8 c0 fd ff ff       	call   14e3 <info_leak>
+    1723:	48 8d 05 e4 09 00 00 	lea    0x9e4(%rip),%rax        # 210e <_IO_stdin_used+0x10e>
+    172a:	48 89 c7             	mov    %rax,%rdi
+    172d:	b8 00 00 00 00       	mov    $0x0,%eax
+    1732:	e8 e9 f9 ff ff       	call   1120 <printf@plt>
+    1737:	48 8b 05 e2 28 00 00 	mov    0x28e2(%rip),%rax        # 4020 <stdout@GLIBC_2.2.5>
+    173e:	48 89 c7             	mov    %rax,%rdi
+    1741:	e8 0a fa ff ff       	call   1150 <fflush@plt>
+    1746:	48 8d 45 a0          	lea    -0x60(%rbp),%rax
+    174a:	48 89 c7             	mov    %rax,%rdi
+    174d:	e8 ee f9 ff ff       	call   1140 <gets@plt>
+    1752:	48 8d 45 a0          	lea    -0x60(%rbp),%rax
+    1756:	ba 04 00 00 00       	mov    $0x4,%edx
+    175b:	48 8d 0d be 09 00 00 	lea    0x9be(%rip),%rcx        # 2120 <_IO_stdin_used+0x120>
+    1762:	48 89 ce             	mov    %rcx,%rsi
+    1765:	48 89 c7             	mov    %rax,%rdi
+    1768:	e8 83 f9 ff ff       	call   10f0 <strncmp@plt>
+    176d:	85 c0                	test   %eax,%eax
+    176f:	75 15                	jne    1786 <handle_input+0x83>
+    1771:	48 8d 45 a0          	lea    -0x60(%rbp),%rax
+    1775:	48 83 c0 04          	add    $0x4,%rax
+    1779:	48 89 c7             	mov    %rax,%rdi
+    177c:	e8 d0 fd ff ff       	call   1551 <lookup>
+    1781:	e9 de 00 00 00       	jmp    1864 <handle_input+0x161>
+    1786:	48 8d 45 a0          	lea    -0x60(%rbp),%rax
+    178a:	ba 04 00 00 00       	mov    $0x4,%edx
+    178f:	48 8d 0d 8f 09 00 00 	lea    0x98f(%rip),%rcx        # 2125 <_IO_stdin_used+0x125>
+    1796:	48 89 ce             	mov    %rcx,%rsi
+    1799:	48 89 c7             	mov    %rax,%rdi
+    179c:	e8 4f f9 ff ff       	call   10f0 <strncmp@plt>
+    17a1:	85 c0                	test   %eax,%eax
+    17a3:	0f 85 ac 00 00 00    	jne    1855 <handle_input+0x152>
+    17a9:	c7 45 9c 00 00 00 00 	movl   $0x0,-0x64(%rbp)
+    17b0:	e9 8f 00 00 00       	jmp    1844 <handle_input+0x141>
+    17b5:	8b 55 9c             	mov    -0x64(%rbp),%edx
+    17b8:	48 89 d0             	mov    %rdx,%rax
+    17bb:	48 01 c0             	add    %rax,%rax
+    17be:	48 01 d0             	add    %rdx,%rax
+    17c1:	48 c1 e0 02          	shl    $0x2,%rax
+    17c5:	48 01 d0             	add    %rdx,%rax
+    17c8:	48 c1 e0 03          	shl    $0x3,%rax
+    17cc:	48 8d 50 20          	lea    0x20(%rax),%rdx
+    17d0:	48 8d 05 89 28 00 00 	lea    0x2889(%rip),%rax        # 4060 <vault>
+    17d7:	48 01 d0             	add    %rdx,%rax
+    17da:	48 8d 48 08          	lea    0x8(%rax),%rcx
+    17de:	8b 55 9c             	mov    -0x64(%rbp),%edx
+    17e1:	48 89 d0             	mov    %rdx,%rax
+    17e4:	48 01 c0             	add    %rax,%rax
+    17e7:	48 01 d0             	add    %rdx,%rax
+    17ea:	48 c1 e0 02          	shl    $0x2,%rax
+    17ee:	48 01 d0             	add    %rdx,%rax
+    17f1:	48 c1 e0 03          	shl    $0x3,%rax
+    17f5:	48 8d 15 64 28 00 00 	lea    0x2864(%rip),%rdx        # 4060 <vault>
+    17fc:	48 01 d0             	add    %rdx,%rax
+    17ff:	48 8d 70 08          	lea    0x8(%rax),%rsi
+    1803:	8b 55 9c             	mov    -0x64(%rbp),%edx
+    1806:	48 89 d0             	mov    %rdx,%rax
+    1809:	48 01 c0             	add    %rax,%rax
+    180c:	48 01 d0             	add    %rdx,%rax
+    180f:	48 c1 e0 02          	shl    $0x2,%rax
+    1813:	48 01 d0             	add    %rdx,%rax
+    1816:	48 c1 e0 03          	shl    $0x3,%rax
+    181a:	48 89 c2             	mov    %rax,%rdx
+    181d:	48 8d 05 3c 28 00 00 	lea    0x283c(%rip),%rax        # 4060 <vault>
+    1824:	8b 04 02             	mov    (%rdx,%rax,1),%eax
+    1827:	48 89 f2             	mov    %rsi,%rdx
+    182a:	89 c6                	mov    %eax,%esi
+    182c:	48 8d 05 f7 08 00 00 	lea    0x8f7(%rip),%rax        # 212a <_IO_stdin_used+0x12a>
+    1833:	48 89 c7             	mov    %rax,%rdi
+    1836:	b8 00 00 00 00       	mov    $0x0,%eax
+    183b:	e8 e0 f8 ff ff       	call   1120 <printf@plt>
+    1840:	83 45 9c 01          	addl   $0x1,-0x64(%rbp)
+    1844:	8b 05 56 2b 00 00    	mov    0x2b56(%rip),%eax        # 43a0 <vault_count>
+    184a:	39 45 9c             	cmp    %eax,-0x64(%rbp)
+    184d:	0f 82 62 ff ff ff    	jb     17b5 <handle_input+0xb2>
+    1853:	eb 0f                	jmp    1864 <handle_input+0x161>
+    1855:	48 8d 05 e4 08 00 00 	lea    0x8e4(%rip),%rax        # 2140 <_IO_stdin_used+0x140>
+    185c:	48 89 c7             	mov    %rax,%rdi
+    185f:	e8 9c f8 ff ff       	call   1100 <puts@plt>
+    1864:	90                   	nop
+    1865:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+    1869:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+    1870:	00 00 
+    1872:	74 05                	je     1879 <handle_input+0x176>
+    1874:	e8 97 f8 ff ff       	call   1110 <__stack_chk_fail@plt>
+    1879:	c9                   	leave
+    187a:	c3                   	ret
+
+000000000000187b <main>:

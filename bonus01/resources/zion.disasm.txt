@@ -1,0 +1,157 @@
+0000000000001317 <alloc_block>:
+    1317:	f3 0f 1e fa          	endbr64
+    131b:	55                   	push   %rbp
+    131c:	48 89 e5             	mov    %rsp,%rbp
+    131f:	48 83 ec 30          	sub    $0x30,%rsp
+    1323:	89 7d dc             	mov    %edi,-0x24(%rbp)
+    1326:	48 89 75 d0          	mov    %rsi,-0x30(%rbp)
+    132a:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+    1331:	00 00 
+    1333:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+    1337:	31 c0                	xor    %eax,%eax
+    1339:	8b 05 41 2d 00 00    	mov    0x2d41(%rip),%eax        # 4080 <block_count>
+    133f:	83 f8 07             	cmp    $0x7,%eax
+    1342:	0f 87 22 01 00 00    	ja     146a <alloc_block+0x153>
+    1348:	bf 20 00 00 00       	mov    $0x20,%edi
+    134d:	e8 fe fd ff ff       	call   1150 <malloc@plt>
+    1352:	48 89 45 e8          	mov    %rax,-0x18(%rbp)
+    1356:	8b 45 dc             	mov    -0x24(%rbp),%eax
+    1359:	48 89 c7             	mov    %rax,%rdi
+    135c:	e8 ef fd ff ff       	call   1150 <malloc@plt>
+    1361:	48 89 45 f0          	mov    %rax,-0x10(%rbp)
+    1365:	48 83 7d e8 00       	cmpq   $0x0,-0x18(%rbp)
+    136a:	74 07                	je     1373 <alloc_block+0x5c>
+    136c:	48 83 7d f0 00       	cmpq   $0x0,-0x10(%rbp)
+    1371:	75 1d                	jne    1390 <alloc_block+0x79>
+    1373:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    1377:	48 89 c7             	mov    %rax,%rdi
+    137a:	e8 61 fd ff ff       	call   10e0 <free@plt>
+    137f:	48 8b 45 f0          	mov    -0x10(%rbp),%rax
+    1383:	48 89 c7             	mov    %rax,%rdi
+    1386:	e8 55 fd ff ff       	call   10e0 <free@plt>
+    138b:	e9 db 00 00 00       	jmp    146b <alloc_block+0x154>
+    1390:	8b 15 ea 2c 00 00    	mov    0x2cea(%rip),%edx        # 4080 <block_count>
+    1396:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    139a:	89 10                	mov    %edx,(%rax)
+    139c:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    13a0:	8b 55 dc             	mov    -0x24(%rbp),%edx
+    13a3:	89 50 04             	mov    %edx,0x4(%rax)
+    13a6:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    13aa:	48 8d 15 b8 fe ff ff 	lea    -0x148(%rip),%rdx        # 1269 <default_on_free>
+    13b1:	48 89 50 18          	mov    %rdx,0x18(%rax)
+    13b5:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    13b9:	48 8d 48 08          	lea    0x8(%rax),%rcx
+    13bd:	48 8b 45 d0          	mov    -0x30(%rbp),%rax
+    13c1:	ba 0f 00 00 00       	mov    $0xf,%edx
+    13c6:	48 89 c6             	mov    %rax,%rsi
+    13c9:	48 89 cf             	mov    %rcx,%rdi
+    13cc:	e8 1f fd ff ff       	call   10f0 <strncpy@plt>
+    13d1:	8b 05 a9 2c 00 00    	mov    0x2ca9(%rip),%eax        # 4080 <block_count>
+    13d7:	8d 50 01             	lea    0x1(%rax),%edx
+    13da:	89 15 a0 2c 00 00    	mov    %edx,0x2ca0(%rip)        # 4080 <block_count>
+    13e0:	89 c0                	mov    %eax,%eax
+    13e2:	48 8d 0c c5 00 00 00 	lea    0x0(,%rax,8),%rcx
+    13e9:	00 
+    13ea:	48 8d 15 4f 2c 00 00 	lea    0x2c4f(%rip),%rdx        # 4040 <blocks>
+    13f1:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    13f5:	48 89 04 11          	mov    %rax,(%rcx,%rdx,1)
+    13f9:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    13fd:	48 8d 48 08          	lea    0x8(%rax),%rcx
+    1401:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+    1405:	8b 00                	mov    (%rax),%eax
+    1407:	8b 55 dc             	mov    -0x24(%rbp),%edx
+    140a:	89 c6                	mov    %eax,%esi
+    140c:	48 8d 05 45 0c 00 00 	lea    0xc45(%rip),%rax        # 2058 <_IO_stdin_used+0x58>
+    1413:	48 89 c7             	mov    %rax,%rdi
+    1416:	b8 00 00 00 00       	mov    $0x0,%eax
+    141b:	e8 00 fd ff ff       	call   1120 <printf@plt>
+    1420:	48 8d 05 60 0c 00 00 	lea    0xc60(%rip),%rax        # 2087 <_IO_stdin_used+0x87>
+    1427:	48 89 c7             	mov    %rax,%rdi
+    142a:	b8 00 00 00 00       	mov    $0x0,%eax
+    142f:	e8 ec fc ff ff       	call   1120 <printf@plt>
+    1434:	48 8b 05 e5 2b 00 00 	mov    0x2be5(%rip),%rax        # 4020 <stdout@GLIBC_2.2.5>
+    143b:	48 89 c7             	mov    %rax,%rdi
+    143e:	e8 1d fd ff ff       	call   1160 <fflush@plt>
+    1443:	8b 45 dc             	mov    -0x24(%rbp),%eax
+    1446:	83 c0 40             	add    $0x40,%eax
+    1449:	89 c2                	mov    %eax,%edx
+    144b:	48 8b 45 f0          	mov    -0x10(%rbp),%rax
+    144f:	48 89 c6             	mov    %rax,%rsi
+    1452:	bf 00 00 00 00       	mov    $0x0,%edi
+    1457:	e8 e4 fc ff ff       	call   1140 <read@plt>
+    145c:	48 8b 45 f0          	mov    -0x10(%rbp),%rax
+    1460:	48 89 c7             	mov    %rax,%rdi
+    1463:	e8 78 fc ff ff       	call   10e0 <free@plt>
+    1468:	eb 01                	jmp    146b <alloc_block+0x154>
+    146a:	90                   	nop
+    146b:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+    146f:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+    1476:	00 00 
+    1478:	74 05                	je     147f <alloc_block+0x168>
+    147a:	e8 91 fc ff ff       	call   1110 <__stack_chk_fail@plt>
+    147f:	c9                   	leave
+    1480:	c3                   	ret
+
+0000000000001481 <free_block>:
+    1481:	f3 0f 1e fa          	endbr64
+    1485:	55                   	push   %rbp
+    1486:	48 89 e5             	mov    %rsp,%rbp
+    1489:	48 83 ec 20          	sub    $0x20,%rsp
+    148d:	89 7d ec             	mov    %edi,-0x14(%rbp)
+    1490:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+    1497:	00 00 
+    1499:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+    149d:	31 c0                	xor    %eax,%eax
+    149f:	8b 05 db 2b 00 00    	mov    0x2bdb(%rip),%eax        # 4080 <block_count>
+    14a5:	39 45 ec             	cmp    %eax,-0x14(%rbp)
+    14a8:	0f 83 a7 00 00 00    	jae    1555 <free_block+0xd4>
+    14ae:	8b 45 ec             	mov    -0x14(%rbp),%eax
+    14b1:	48 8d 14 c5 00 00 00 	lea    0x0(,%rax,8),%rdx
+    14b8:	00 
+    14b9:	48 8d 05 80 2b 00 00 	lea    0x2b80(%rip),%rax        # 4040 <blocks>
+    14c0:	48 8b 04 02          	mov    (%rdx,%rax,1),%rax
+    14c4:	48 85 c0             	test   %rax,%rax
+    14c7:	0f 84 88 00 00 00    	je     1555 <free_block+0xd4>
+    14cd:	8b 45 ec             	mov    -0x14(%rbp),%eax
+    14d0:	89 c6                	mov    %eax,%esi
+    14d2:	48 8d 05 bc 0b 00 00 	lea    0xbbc(%rip),%rax        # 2095 <_IO_stdin_used+0x95>
+    14d9:	48 89 c7             	mov    %rax,%rdi
+    14dc:	b8 00 00 00 00       	mov    $0x0,%eax
+    14e1:	e8 3a fc ff ff       	call   1120 <printf@plt>
+    14e6:	8b 45 ec             	mov    -0x14(%rbp),%eax
+    14e9:	48 8d 14 c5 00 00 00 	lea    0x0(,%rax,8),%rdx
+    14f0:	00 
+    14f1:	48 8d 05 48 2b 00 00 	lea    0x2b48(%rip),%rax        # 4040 <blocks>
+    14f8:	48 8b 04 02          	mov    (%rdx,%rax,1),%rax
+    14fc:	48 8b 50 18          	mov    0x18(%rax),%rdx
+    1500:	8b 45 ec             	mov    -0x14(%rbp),%eax
+    1503:	48 8d 0c c5 00 00 00 	lea    0x0(,%rax,8),%rcx
+    150a:	00 
+    150b:	48 8d 05 2e 2b 00 00 	lea    0x2b2e(%rip),%rax        # 4040 <blocks>
+    1512:	48 8b 04 01          	mov    (%rcx,%rax,1),%rax
+    1516:	48 89 c7             	mov    %rax,%rdi
+    1519:	ff d2                	call   *%rdx
+    151b:	8b 45 ec             	mov    -0x14(%rbp),%eax
+    151e:	48 8d 14 c5 00 00 00 	lea    0x0(,%rax,8),%rdx
+    1525:	00 
+    1526:	48 8d 05 13 2b 00 00 	lea    0x2b13(%rip),%rax        # 4040 <blocks>
+    152d:	48 8b 04 02          	mov    (%rdx,%rax,1),%rax
+    1531:	48 89 c7             	mov    %rax,%rdi
+    1534:	e8 a7 fb ff ff       	call   10e0 <free@plt>
+    1539:	8b 45 ec             	mov    -0x14(%rbp),%eax
+    153c:	48 8d 14 c5 00 00 00 	lea    0x0(,%rax,8),%rdx
+    1543:	00 
+    1544:	48 8d 05 f5 2a 00 00 	lea    0x2af5(%rip),%rax        # 4040 <blocks>
+    154b:	48 c7 04 02 00 00 00 	movq   $0x0,(%rdx,%rax,1)
+    1552:	00 
+    1553:	eb 01                	jmp    1556 <free_block+0xd5>
+    1555:	90                   	nop
+    1556:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+    155a:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+    1561:	00 00 
+    1563:	74 05                	je     156a <free_block+0xe9>
+    1565:	e8 a6 fb ff ff       	call   1110 <__stack_chk_fail@plt>
+    156a:	c9                   	leave
+    156b:	c3                   	ret
+
+000000000000156c <list_blocks>:

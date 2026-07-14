@@ -7,6 +7,9 @@ Each user `levelNN` owns a SUID binary owned by `flagNN`. Exploiting it to run
 as `flagNN` lets us read `/home/flagNN/.pass`, which is the SSH password for
 `levelNN+1`. Chain: `level00 → … → level10` (boss), then `bonus01 → bonus05`.
 
+**Status: all 11 mandatory + 5 bonus levels solved.** Recovered flags/passwords
+are in each `levelNN/flag` (and `bonusNN/flag`).
+
 ## Layout (per the subject)
 
 Each level directory contains:
@@ -46,3 +49,8 @@ Each `exploit.py` builds a payload (`python3 exploit.py > payload`); the
 | level09 | NX + canary, no PIE, ASLR off      | fmt-string canary leak → `gets()` overflow ret2libc |
 | …       |                                   |                                        |
 | level10 | NX + canary + RELRO (boss), ASLR off | fmt-string canary leak → `gets()` overflow ret2libc |
+| bonus01 | PIE + NX + canary, ASLR off       | heap overflow → on-free callback hijack (tcache) |
+| bonus02 | PIE + NX + canary, ASLR off       | use-after-free → callback hijack |
+| bonus03 | PIE + NX + canary, ASLR off       | fmt-string canary leak + `gets()` overflow → ret2libc |
+| bonus04 | No PIE, NX, **no canary**, ASLR off | plain `gets()` overflow → ret2libc |
+| bonus05 | PIE + NX + canary, ASLR off       | fmt-string canary leak + `gets()` overflow → ret2libc |
