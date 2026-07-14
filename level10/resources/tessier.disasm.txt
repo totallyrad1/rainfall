@@ -1,0 +1,209 @@
+00000000004013de <format_log>:
+  4013de:	f3 0f 1e fa          	endbr64
+  4013e2:	55                   	push   %rbp
+  4013e3:	48 89 e5             	mov    %rsp,%rbp
+  4013e6:	48 83 ec 30          	sub    $0x30,%rsp
+  4013ea:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+  4013f1:	00 00 
+  4013f3:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+  4013f7:	31 c0                	xor    %eax,%eax
+  4013f9:	48 8d 05 bc 0c 00 00 	lea    0xcbc(%rip),%rax        # 4020bc <_IO_stdin_used+0xbc>
+  401400:	48 89 c7             	mov    %rax,%rdi
+  401403:	b8 00 00 00 00       	mov    $0x0,%eax
+  401408:	e8 23 fd ff ff       	call   401130 <printf@plt>
+  40140d:	48 8b 05 6c 2c 00 00 	mov    0x2c6c(%rip),%rax        # 404080 <stdout@GLIBC_2.2.5>
+  401414:	48 89 c7             	mov    %rax,%rdi
+  401417:	e8 64 fd ff ff       	call   401180 <fflush@plt>
+  40141c:	48 8b 15 6d 2c 00 00 	mov    0x2c6d(%rip),%rdx        # 404090 <stdin@GLIBC_2.2.5>
+  401423:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  401427:	be 20 00 00 00       	mov    $0x20,%esi
+  40142c:	48 89 c7             	mov    %rax,%rdi
+  40142f:	e8 2c fd ff ff       	call   401160 <fgets@plt>
+  401434:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  401438:	48 8d 15 91 0c 00 00 	lea    0xc91(%rip),%rdx        # 4020d0 <_IO_stdin_used+0xd0>
+  40143f:	48 89 d6             	mov    %rdx,%rsi
+  401442:	48 89 c7             	mov    %rax,%rdi
+  401445:	e8 06 fd ff ff       	call   401150 <strcspn@plt>
+  40144a:	c6 44 05 d0 00       	movb   $0x0,-0x30(%rbp,%rax,1)
+  40144f:	48 8d 05 7c 0c 00 00 	lea    0xc7c(%rip),%rax        # 4020d2 <_IO_stdin_used+0xd2>
+  401456:	48 89 c7             	mov    %rax,%rdi
+  401459:	b8 00 00 00 00       	mov    $0x0,%eax
+  40145e:	e8 cd fc ff ff       	call   401130 <printf@plt>
+  401463:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  401467:	48 89 c7             	mov    %rax,%rdi
+  40146a:	b8 00 00 00 00       	mov    $0x0,%eax
+  40146f:	e8 bc fc ff ff       	call   401130 <printf@plt>
+  401474:	bf 0a 00 00 00       	mov    $0xa,%edi
+  401479:	e8 62 fc ff ff       	call   4010e0 <putchar@plt>
+  40147e:	90                   	nop
+  40147f:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+  401483:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+  40148a:	00 00 
+  40148c:	74 05                	je     401493 <format_log+0xb5>
+  40148e:	e8 8d fc ff ff       	call   401120 <__stack_chk_fail@plt>
+  401493:	c9                   	leave
+  401494:	c3                   	ret
+
+0000000000401495 <create_session>:
+  401495:	f3 0f 1e fa          	endbr64
+  401499:	55                   	push   %rbp
+  40149a:	48 89 e5             	mov    %rsp,%rbp
+  40149d:	48 83 ec 20          	sub    $0x20,%rsp
+  4014a1:	48 89 7d e8          	mov    %rdi,-0x18(%rbp)
+  4014a5:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+  4014ac:	00 00 
+  4014ae:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+  4014b2:	31 c0                	xor    %eax,%eax
+  4014b4:	8b 05 e6 2d 00 00    	mov    0x2de6(%rip),%eax        # 4042a0 <session_count>
+  4014ba:	83 f8 03             	cmp    $0x3,%eax
+  4014bd:	76 0a                	jbe    4014c9 <create_session+0x34>
+  4014bf:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  4014c4:	e9 d6 00 00 00       	jmp    40159f <create_session+0x10a>
+  4014c9:	8b 05 d1 2d 00 00    	mov    0x2dd1(%rip),%eax        # 4042a0 <session_count>
+  4014cf:	8b 0d cb 2d 00 00    	mov    0x2dcb(%rip),%ecx        # 4042a0 <session_count>
+  4014d5:	89 c2                	mov    %eax,%edx
+  4014d7:	48 89 d0             	mov    %rdx,%rax
+  4014da:	48 c1 e0 02          	shl    $0x2,%rax
+  4014de:	48 01 d0             	add    %rdx,%rax
+  4014e1:	48 01 c0             	add    %rax,%rax
+  4014e4:	48 01 d0             	add    %rdx,%rax
+  4014e7:	48 c1 e0 02          	shl    $0x2,%rax
+  4014eb:	48 89 c2             	mov    %rax,%rdx
+  4014ee:	48 8d 05 ab 2b 00 00 	lea    0x2bab(%rip),%rax        # 4040a0 <sessions>
+  4014f5:	89 0c 02             	mov    %ecx,(%rdx,%rax,1)
+  4014f8:	8b 05 a2 2d 00 00    	mov    0x2da2(%rip),%eax        # 4042a0 <session_count>
+  4014fe:	89 c2                	mov    %eax,%edx
+  401500:	48 89 d0             	mov    %rdx,%rax
+  401503:	48 c1 e0 02          	shl    $0x2,%rax
+  401507:	48 01 d0             	add    %rdx,%rax
+  40150a:	48 01 c0             	add    %rax,%rax
+  40150d:	48 01 d0             	add    %rdx,%rax
+  401510:	48 c1 e0 02          	shl    $0x2,%rax
+  401514:	48 89 c2             	mov    %rax,%rdx
+  401517:	48 8d 05 86 2b 00 00 	lea    0x2b86(%rip),%rax        # 4040a4 <sessions+0x4>
+  40151e:	c7 04 02 00 00 00 00 	movl   $0x0,(%rdx,%rax,1)
+  401525:	8b 05 75 2d 00 00    	mov    0x2d75(%rip),%eax        # 4042a0 <session_count>
+  40152b:	89 c2                	mov    %eax,%edx
+  40152d:	48 89 d0             	mov    %rdx,%rax
+  401530:	48 c1 e0 02          	shl    $0x2,%rax
+  401534:	48 01 d0             	add    %rdx,%rax
+  401537:	48 01 c0             	add    %rax,%rax
+  40153a:	48 01 d0             	add    %rdx,%rax
+  40153d:	48 c1 e0 02          	shl    $0x2,%rax
+  401541:	48 89 c2             	mov    %rax,%rdx
+  401544:	48 8d 05 5d 2b 00 00 	lea    0x2b5d(%rip),%rax        # 4040a8 <sessions+0x8>
+  40154b:	c7 04 02 01 00 00 00 	movl   $0x1,(%rdx,%rax,1)
+  401552:	8b 05 48 2d 00 00    	mov    0x2d48(%rip),%eax        # 4042a0 <session_count>
+  401558:	89 c2                	mov    %eax,%edx
+  40155a:	48 89 d0             	mov    %rdx,%rax
+  40155d:	48 c1 e0 02          	shl    $0x2,%rax
+  401561:	48 01 d0             	add    %rdx,%rax
+  401564:	48 01 c0             	add    %rax,%rax
+  401567:	48 01 d0             	add    %rdx,%rax
+  40156a:	48 c1 e0 02          	shl    $0x2,%rax
+  40156e:	48 8d 15 2b 2b 00 00 	lea    0x2b2b(%rip),%rdx        # 4040a0 <sessions>
+  401575:	48 01 d0             	add    %rdx,%rax
+  401578:	48 8d 48 0c          	lea    0xc(%rax),%rcx
+  40157c:	48 8b 45 e8          	mov    -0x18(%rbp),%rax
+  401580:	ba 1f 00 00 00       	mov    $0x1f,%edx
+  401585:	48 89 c6             	mov    %rax,%rsi
+  401588:	48 89 cf             	mov    %rcx,%rdi
+  40158b:	e8 60 fb ff ff       	call   4010f0 <strncpy@plt>
+  401590:	8b 05 0a 2d 00 00    	mov    0x2d0a(%rip),%eax        # 4042a0 <session_count>
+  401596:	8d 50 01             	lea    0x1(%rax),%edx
+  401599:	89 15 01 2d 00 00    	mov    %edx,0x2d01(%rip)        # 4042a0 <session_count>
+  40159f:	48 8b 55 f8          	mov    -0x8(%rbp),%rdx
+  4015a3:	64 48 2b 14 25 28 00 	sub    %fs:0x28,%rdx
+  4015aa:	00 00 
+  4015ac:	74 05                	je     4015b3 <create_session+0x11e>
+  4015ae:	e8 6d fb ff ff       	call   401120 <__stack_chk_fail@plt>
+  4015b3:	c9                   	leave
+  4015b4:	c3                   	ret
+
+00000000004015b5 <authenticate>:
+  4015b5:	f3 0f 1e fa          	endbr64
+  4015b9:	55                   	push   %rbp
+  4015ba:	48 89 e5             	mov    %rsp,%rbp
+  4015bd:	48 83 ec 60          	sub    $0x60,%rsp
+  4015c1:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+  4015c8:	00 00 
+  4015ca:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+  4015ce:	31 c0                	xor    %eax,%eax
+  4015d0:	48 8d 05 10 0b 00 00 	lea    0xb10(%rip),%rax        # 4020e7 <_IO_stdin_used+0xe7>
+  4015d7:	48 89 c7             	mov    %rax,%rdi
+  4015da:	b8 00 00 00 00       	mov    $0x0,%eax
+  4015df:	e8 4c fb ff ff       	call   401130 <printf@plt>
+  4015e4:	48 8b 05 95 2a 00 00 	mov    0x2a95(%rip),%rax        # 404080 <stdout@GLIBC_2.2.5>
+  4015eb:	48 89 c7             	mov    %rax,%rdi
+  4015ee:	e8 8d fb ff ff       	call   401180 <fflush@plt>
+  4015f3:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+  4015f7:	48 89 c7             	mov    %rax,%rdi
+  4015fa:	e8 71 fb ff ff       	call   401170 <gets@plt>
+  4015ff:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+  401603:	48 89 c7             	mov    %rax,%rdi
+  401606:	e8 8a fe ff ff       	call   401495 <create_session>
+  40160b:	89 45 ac             	mov    %eax,-0x54(%rbp)
+  40160e:	83 7d ac 00          	cmpl   $0x0,-0x54(%rbp)
+  401612:	79 14                	jns    401628 <authenticate+0x73>
+  401614:	48 8d 05 e9 0a 00 00 	lea    0xae9(%rip),%rax        # 402104 <_IO_stdin_used+0x104>
+  40161b:	48 89 c7             	mov    %rax,%rdi
+  40161e:	e8 ed fa ff ff       	call   401110 <puts@plt>
+  401623:	e9 c7 00 00 00       	jmp    4016ef <authenticate+0x13a>
+  401628:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+  40162c:	ba 08 00 00 00       	mov    $0x8,%edx
+  401631:	48 8d 0d e9 0a 00 00 	lea    0xae9(%rip),%rcx        # 402121 <_IO_stdin_used+0x121>
+  401638:	48 89 ce             	mov    %rcx,%rsi
+  40163b:	48 89 c7             	mov    %rax,%rdi
+  40163e:	e8 bd fa ff ff       	call   401100 <strncmp@plt>
+  401643:	85 c0                	test   %eax,%eax
+  401645:	75 64                	jne    4016ab <authenticate+0xf6>
+  401647:	8b 45 ac             	mov    -0x54(%rbp),%eax
+  40164a:	48 63 d0             	movslq %eax,%rdx
+  40164d:	48 89 d0             	mov    %rdx,%rax
+  401650:	48 c1 e0 02          	shl    $0x2,%rax
+  401654:	48 01 d0             	add    %rdx,%rax
+  401657:	48 01 c0             	add    %rax,%rax
+  40165a:	48 01 d0             	add    %rdx,%rax
+  40165d:	48 c1 e0 02          	shl    $0x2,%rax
+  401661:	48 89 c2             	mov    %rax,%rdx
+  401664:	48 8d 05 39 2a 00 00 	lea    0x2a39(%rip),%rax        # 4040a4 <sessions+0x4>
+  40166b:	c7 04 02 ff 00 00 00 	movl   $0xff,(%rdx,%rax,1)
+  401672:	8b 45 ac             	mov    -0x54(%rbp),%eax
+  401675:	89 c6                	mov    %eax,%esi
+  401677:	48 8d 05 b2 0a 00 00 	lea    0xab2(%rip),%rax        # 402130 <_IO_stdin_used+0x130>
+  40167e:	48 89 c7             	mov    %rax,%rdi
+  401681:	b8 00 00 00 00       	mov    $0x0,%eax
+  401686:	e8 a5 fa ff ff       	call   401130 <printf@plt>
+  40168b:	48 8d 05 ea 2a 00 00 	lea    0x2aea(%rip),%rax        # 40417c <vault+0x1c>
+  401692:	48 89 c6             	mov    %rax,%rsi
+  401695:	48 8d 05 bc 0a 00 00 	lea    0xabc(%rip),%rax        # 402158 <_IO_stdin_used+0x158>
+  40169c:	48 89 c7             	mov    %rax,%rdi
+  40169f:	b8 00 00 00 00       	mov    $0x0,%eax
+  4016a4:	e8 87 fa ff ff       	call   401130 <printf@plt>
+  4016a9:	eb 44                	jmp    4016ef <authenticate+0x13a>
+  4016ab:	8b 45 ac             	mov    -0x54(%rbp),%eax
+  4016ae:	89 c6                	mov    %eax,%esi
+  4016b0:	48 8d 05 b9 0a 00 00 	lea    0xab9(%rip),%rax        # 402170 <_IO_stdin_used+0x170>
+  4016b7:	48 89 c7             	mov    %rax,%rdi
+  4016ba:	b8 00 00 00 00       	mov    $0x0,%eax
+  4016bf:	e8 6c fa ff ff       	call   401130 <printf@plt>
+  4016c4:	8b 45 ac             	mov    -0x54(%rbp),%eax
+  4016c7:	48 63 d0             	movslq %eax,%rdx
+  4016ca:	48 89 d0             	mov    %rdx,%rax
+  4016cd:	48 c1 e0 02          	shl    $0x2,%rax
+  4016d1:	48 01 d0             	add    %rdx,%rax
+  4016d4:	48 01 c0             	add    %rax,%rax
+  4016d7:	48 01 d0             	add    %rdx,%rax
+  4016da:	48 c1 e0 02          	shl    $0x2,%rax
+  4016de:	48 89 c2             	mov    %rax,%rdx
+  4016e1:	48 8d 05 c0 29 00 00 	lea    0x29c0(%rip),%rax        # 4040a8 <sessions+0x8>
+  4016e8:	c7 04 02 00 00 00 00 	movl   $0x0,(%rdx,%rax,1)
+  4016ef:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+  4016f3:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+  4016fa:	00 00 
+  4016fc:	74 05                	je     401703 <authenticate+0x14e>
+  4016fe:	e8 1d fa ff ff       	call   401120 <__stack_chk_fail@plt>
+  401703:	c9                   	leave
+  401704:	c3                   	ret
+
+0000000000401705 <main>:
