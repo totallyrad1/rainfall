@@ -1,12 +1,18 @@
+# Python venv used to run the pwntools exploits (contains binaries)
+.venv/
+
 # WSL download artifacts
 *:Zone.Identifier
 
-# Subject PDF (reference only, not a graded deliverable)
+# Subject PDFs (reference only, not graded deliverables)
 en.subject.pdf
+en.subject-rainfallNew.pdf
 
-# The subject forbids committing ANY binary. Never track compiled output.
+# The subject forbids committing ANY binary. Never track compiled output or
+# binaries downloaded from the VM for local analysis.
 *.o
 *.out
 a.out
 core
 core.*
+work/

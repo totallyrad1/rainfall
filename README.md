@@ -1,44 +1,40 @@
-# Rainfall
+# Rainfall (v2 — "A binary exploitation project", version 5.0)
 
-Solutions and write-ups for the **Rainfall** project — an introduction to the
-exploitation of ELF (i386, 32-bit) binaries.
+Exploitation of **x86-64 ELF** SUID binaries on Ubuntu 24.04, with modern
+mitigations (NX, stack canaries, ASLR, RELRO, PIE) switched on level by level.
 
-Each user `levelX` owns a setuid binary. Exploiting it yields a shell as the
-next user, whose `~/.pass` is the password (the "flag") used to `su`/`ssh` into
-that next level. The chain is:
+Each user `levelNN` owns a SUID binary owned by `flagNN`. Exploiting it to run
+as `flagNN` lets us read `/home/flagNN/.pass`, which is the SSH password for
+`levelNN+1`. Chain: `level00 → … → level10` (boss), then `bonus01 → bonus05`.
+
+## Layout (per the subject)
+
+Each level directory contains:
+
+| File / dir     | Contents                                                       |
+| -------------- | -------------------------------------------------------------- |
+| `flag`         | the recovered flag (SSH password for the next level)           |
+| `resources/`   | the pwntools `exploit.py`, a `walkthrough.md`, and the source  |
+
+No binaries are committed. Exploits are written with **pwntools** (Python).
+The v1 (32-bit) project is archived under [`rainfall-v1/`](./rainfall-v1).
+
+## Running the exploits
+
+A Python venv with pwntools lives in `.venv/` (git-ignored):
 
 ```
-level0 -> level1 -> ... -> level9 -> bonus0 -> bonus1 -> bonus2 -> bonus3 -> end
+python3 -m venv .venv && . .venv/bin/activate && pip install pwntools
 ```
 
-## Layout
+Each `exploit.py` builds a payload (`python3 exploit.py > payload`); the
+`walkthrough.md` shows how it is delivered to the binary on the VM.
 
-Every level directory follows the structure required by the subject:
+## Mitigation / technique map
 
-| File / dir      | Contents                                                        |
-| --------------- | --------------------------------------------------------------- |
-| `flag`          | The recovered password of the **next** user.                    |
-| `source`        | The exploited binary reconstructed as readable C/C++.           |
-| `walkthrough`   | Step-by-step explanation of the vulnerability and the exploit.  |
-| `Ressources/`   | Proof material: disassembly, payloads, exploit scripts, notes.  |
-
-No compiled binary is ever committed (per the subject).
-
-## Vulnerability map
-
-| Level  | Bug class                     |
-| ------ | ----------------------------- |
-| level0 | logic gate (`atoi`)           |
-| level1 | stack overflow (`gets`)       |
-| level2 | overflow, sanitized saved-EIP |
-| level3 | format string                 |
-| level4 | format string                 |
-| level5 | format string -> GOT overwrite|
-| level6 | heap overflow (fn pointer)    |
-| level7 | heap overflow -> GOT overwrite|
-| level8 | logic bug (mini-shell)        |
-| level9 | C++ vtable overwrite          |
-| bonus0 | stack overflow (concat)       |
-| bonus1 | signed integer / `memcpy`     |
-| bonus2 | stack overflow (LANG greeting)|
-| bonus3 | logic bug (`atoi` index)      |
+| Level   | Key mitigation state              | Technique                              |
+| ------- | --------------------------------- | -------------------------------------- |
+| level00 | exec stack, no canary/PIE, ASLR off | shellcode on stack + NOP sled        |
+| level01 | _tbd_                             | _tbd_                                  |
+| …       |                                   |                                        |
+| level10 | NX + canary + ASLR (boss)         | leak + canary defeat + ret2libc ROP    |
