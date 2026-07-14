@@ -1,0 +1,132 @@
+00000000004014c2 <relay_status>:
+  4014c2:	f3 0f 1e fa          	endbr64
+  4014c6:	55                   	push   %rbp
+  4014c7:	48 89 e5             	mov    %rsp,%rbp
+  4014ca:	48 83 ec 60          	sub    $0x60,%rsp
+  4014ce:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+  4014d5:	00 00 
+  4014d7:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+  4014db:	31 c0                	xor    %eax,%eax
+  4014dd:	48 8d 05 84 0b 00 00 	lea    0xb84(%rip),%rax        # 402068 <_IO_stdin_used+0x68>
+  4014e4:	48 89 c7             	mov    %rax,%rdi
+  4014e7:	b8 00 00 00 00       	mov    $0x0,%eax
+  4014ec:	e8 3f fc ff ff       	call   401130 <printf@plt>
+  4014f1:	48 8b 05 88 2b 00 00 	mov    0x2b88(%rip),%rax        # 404080 <stdout@GLIBC_2.2.5>
+  4014f8:	48 89 c7             	mov    %rax,%rdi
+  4014fb:	e8 70 fc ff ff       	call   401170 <fflush@plt>
+  401500:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+  401504:	ba 3f 00 00 00       	mov    $0x3f,%edx
+  401509:	48 89 c6             	mov    %rax,%rsi
+  40150c:	bf 00 00 00 00       	mov    $0x0,%edi
+  401511:	e8 4a fc ff ff       	call   401160 <read@plt>
+  401516:	48 89 45 a8          	mov    %rax,-0x58(%rbp)
+  40151a:	48 83 7d a8 00       	cmpq   $0x0,-0x58(%rbp)
+  40151f:	79 08                	jns    401529 <relay_status+0x67>
+  401521:	48 c7 45 a8 00 00 00 	movq   $0x0,-0x58(%rbp)
+  401528:	00 
+  401529:	48 8d 55 b0          	lea    -0x50(%rbp),%rdx
+  40152d:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
+  401531:	48 01 d0             	add    %rdx,%rax
+  401534:	c6 00 00             	movb   $0x0,(%rax)
+  401537:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+  40153b:	48 8d 15 51 0b 00 00 	lea    0xb51(%rip),%rdx        # 402093 <_IO_stdin_used+0x93>
+  401542:	48 89 d6             	mov    %rdx,%rsi
+  401545:	48 89 c7             	mov    %rax,%rdi
+  401548:	e8 03 fc ff ff       	call   401150 <strcspn@plt>
+  40154d:	c6 44 05 b0 00       	movb   $0x0,-0x50(%rbp,%rax,1)
+  401552:	48 8d 05 3c 0b 00 00 	lea    0xb3c(%rip),%rax        # 402095 <_IO_stdin_used+0x95>
+  401559:	48 89 c7             	mov    %rax,%rdi
+  40155c:	b8 00 00 00 00       	mov    $0x0,%eax
+  401561:	e8 ca fb ff ff       	call   401130 <printf@plt>
+  401566:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+  40156a:	48 89 c7             	mov    %rax,%rdi
+  40156d:	b8 00 00 00 00       	mov    $0x0,%eax
+  401572:	e8 b9 fb ff ff       	call   401130 <printf@plt>
+  401577:	bf 0a 00 00 00       	mov    $0xa,%edi
+  40157c:	e8 5f fb ff ff       	call   4010e0 <putchar@plt>
+  401581:	48 8b 05 f8 2a 00 00 	mov    0x2af8(%rip),%rax        # 404080 <stdout@GLIBC_2.2.5>
+  401588:	48 89 c7             	mov    %rax,%rdi
+  40158b:	e8 e0 fb ff ff       	call   401170 <fflush@plt>
+  401590:	90                   	nop
+  401591:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+  401595:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+  40159c:	00 00 
+  40159e:	74 05                	je     4015a5 <relay_status+0xe3>
+  4015a0:	e8 7b fb ff ff       	call   401120 <__stack_chk_fail@plt>
+  4015a5:	c9                   	leave
+  4015a6:	c3                   	ret
+
+00000000004015a7 <relay_data>:
+  4015a7:	f3 0f 1e fa          	endbr64
+  4015ab:	55                   	push   %rbp
+  4015ac:	48 89 e5             	mov    %rsp,%rbp
+  4015af:	48 83 ec 40          	sub    $0x40,%rsp
+  4015b3:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+  4015ba:	00 00 
+  4015bc:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
+  4015c0:	31 c0                	xor    %eax,%eax
+  4015c2:	48 8d 05 ea 0a 00 00 	lea    0xaea(%rip),%rax        # 4020b3 <_IO_stdin_used+0xb3>
+  4015c9:	48 89 c7             	mov    %rax,%rdi
+  4015cc:	b8 00 00 00 00       	mov    $0x0,%eax
+  4015d1:	e8 5a fb ff ff       	call   401130 <printf@plt>
+  4015d6:	48 8b 05 a3 2a 00 00 	mov    0x2aa3(%rip),%rax        # 404080 <stdout@GLIBC_2.2.5>
+  4015dd:	48 89 c7             	mov    %rax,%rdi
+  4015e0:	e8 8b fb ff ff       	call   401170 <fflush@plt>
+  4015e5:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  4015e9:	ba 40 00 00 00       	mov    $0x40,%edx
+  4015ee:	48 89 c6             	mov    %rax,%rsi
+  4015f1:	bf 00 00 00 00       	mov    $0x0,%edi
+  4015f6:	e8 65 fb ff ff       	call   401160 <read@plt>
+  4015fb:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  4015ff:	ba 06 00 00 00       	mov    $0x6,%edx
+  401604:	48 8d 0d bc 0a 00 00 	lea    0xabc(%rip),%rcx        # 4020c7 <_IO_stdin_used+0xc7>
+  40160b:	48 89 ce             	mov    %rcx,%rsi
+  40160e:	48 89 c7             	mov    %rax,%rdi
+  401611:	e8 ea fa ff ff       	call   401100 <strncmp@plt>
+  401616:	85 c0                	test   %eax,%eax
+  401618:	0f 85 8c 00 00 00    	jne    4016aa <relay_data+0x103>
+  40161e:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  401622:	48 83 c0 06          	add    $0x6,%rax
+  401626:	ba 0a 00 00 00       	mov    $0xa,%edx
+  40162b:	be 00 00 00 00       	mov    $0x0,%esi
+  401630:	48 89 c7             	mov    %rax,%rdi
+  401633:	e8 48 fb ff ff       	call   401180 <strtoul@plt>
+  401638:	89 45 cc             	mov    %eax,-0x34(%rbp)
+  40163b:	81 7d cc ff 01 00 00 	cmpl   $0x1ff,-0x34(%rbp)
+  401642:	77 75                	ja     4016b9 <relay_data+0x112>
+  401644:	8b 45 cc             	mov    -0x34(%rbp),%eax
+  401647:	89 c6                	mov    %eax,%esi
+  401649:	48 8d 05 80 0a 00 00 	lea    0xa80(%rip),%rax        # 4020d0 <_IO_stdin_used+0xd0>
+  401650:	48 89 c7             	mov    %rax,%rdi
+  401653:	b8 00 00 00 00       	mov    $0x0,%eax
+  401658:	e8 d3 fa ff ff       	call   401130 <printf@plt>
+  40165d:	48 8b 05 1c 2a 00 00 	mov    0x2a1c(%rip),%rax        # 404080 <stdout@GLIBC_2.2.5>
+  401664:	48 89 c7             	mov    %rax,%rdi
+  401667:	e8 04 fb ff ff       	call   401170 <fflush@plt>
+  40166c:	8b 45 cc             	mov    -0x34(%rbp),%eax
+  40166f:	48 89 c2             	mov    %rax,%rdx
+  401672:	48 8d 05 87 2b 00 00 	lea    0x2b87(%rip),%rax        # 404200 <relay_buf>
+  401679:	48 89 c6             	mov    %rax,%rsi
+  40167c:	bf 00 00 00 00       	mov    $0x0,%edi
+  401681:	e8 da fa ff ff       	call   401160 <read@plt>
+  401686:	89 05 74 2d 00 00    	mov    %eax,0x2d74(%rip)        # 404400 <relay_len>
+  40168c:	8b 05 6e 2d 00 00    	mov    0x2d6e(%rip),%eax        # 404400 <relay_len>
+  401692:	89 c6                	mov    %eax,%esi
+  401694:	48 8d 05 54 0a 00 00 	lea    0xa54(%rip),%rax        # 4020ef <_IO_stdin_used+0xef>
+  40169b:	48 89 c7             	mov    %rax,%rdi
+  40169e:	b8 00 00 00 00       	mov    $0x0,%eax
+  4016a3:	e8 88 fa ff ff       	call   401130 <printf@plt>
+  4016a8:	eb 0f                	jmp    4016b9 <relay_data+0x112>
+  4016aa:	48 8d 05 5b 0a 00 00 	lea    0xa5b(%rip),%rax        # 40210c <_IO_stdin_used+0x10c>
+  4016b1:	48 89 c7             	mov    %rax,%rdi
+  4016b4:	e8 57 fa ff ff       	call   401110 <puts@plt>
+  4016b9:	90                   	nop
+  4016ba:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
+  4016be:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+  4016c5:	00 00 
+  4016c7:	74 05                	je     4016ce <relay_data+0x127>
+  4016c9:	e8 52 fa ff ff       	call   401120 <__stack_chk_fail@plt>
+  4016ce:	c9                   	leave
+  4016cf:	c3                   	ret
+
+00000000004016d0 <print_routes>:
