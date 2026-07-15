@@ -20,7 +20,6 @@ Each level directory contains:
 | `resources/`   | the pwntools `exploit.py`, a `walkthrough.md`, and the source  |
 
 No binaries are committed. Exploits are written with **pwntools** (Python).
-The v1 (32-bit) project is archived under [`rainfall-v1/`](./rainfall-v1).
 
 ## Running the exploits
 
