@@ -20,7 +20,7 @@ Every level directory follows the structure required by the subject:
 | `flag`          | The recovered password of the **next** user.                    |
 | `source`        | The exploited binary reconstructed as readable C/C++.           |
 | `walkthrough`   | Step-by-step explanation of the vulnerability and the exploit.  |
-| `Ressources/`   | Proof material: disassembly, payloads, exploit scripts, notes.  |
+| `Ressources/`   | Proof material: `exploit.py` (pwntools), disassembly, notes.    |
 
 No compiled binary is ever committed (per the subject).
 
